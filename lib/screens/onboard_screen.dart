@@ -156,9 +156,11 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                   onTap: () async {
                     if (index == screens.length - 1) {
                       await _storeOnboardInfo();
-                      Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => ScreenLayout())
-                      );
+                      if (mounted) {
+                        Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => const ScreenLayout())
+                        );
+                      }
                     }
                     _pageController.nextPage(
                       duration: const Duration(milliseconds: 300),

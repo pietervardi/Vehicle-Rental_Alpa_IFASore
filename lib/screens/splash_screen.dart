@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vehicle_rental/responsive/screen_layout.dart';
-import 'package:vehicle_rental/screens/onboard_screen.dart';
 import 'package:vehicle_rental/utils/colors.dart';
+import 'package:vehicle_rental/screens/onboard_screen.dart';
+import 'package:vehicle_rental/screens/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -33,12 +33,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isViewed == null || isViewed == 0) {
       nextScreen = const OnBoardScreen();
     } else {
-      nextScreen = const ScreenLayout();
+      nextScreen = const LoginScreen();
     }
 
-    Navigator.pushReplacement(context, MaterialPageRoute(
-      builder: (context) => nextScreen,
-    ));
+    if (mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => nextScreen,
+      ));
+    }
   }
 
   @override

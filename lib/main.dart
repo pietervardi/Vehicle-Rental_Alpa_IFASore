@@ -4,9 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/utils/theme_provider.dart';
 import 'package:vehicle_rental/screens/splash_screen.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 int? isviewed;
-void main() async {
+Future main() async {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

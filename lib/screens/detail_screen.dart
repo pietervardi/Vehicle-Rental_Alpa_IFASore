@@ -21,7 +21,7 @@ class CarDetailScreen extends StatelessWidget {
 
             return IconButton(
               icon: Icon(
-                Icons.keyboard_arrow_left,
+                Icons.keyboard_arrow_left_outlined,
                 color: isDarkMode ? Colors.white : Colors.black,
                 size: 28,
               ),
