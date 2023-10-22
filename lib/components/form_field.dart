@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/helper.dart';
 
+// Form Field for Login and Register
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintName;
@@ -55,6 +56,7 @@ class CustomTextFormField extends StatelessWidget {
   }
 }
 
+// Form Field for Change Password
 class PasswordFormField extends StatelessWidget {
   final TextEditingController? controller;
   final String? labelText;
@@ -66,36 +68,37 @@ class PasswordFormField extends StatelessWidget {
     this.isObscureText = true,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       obscureText: isObscureText,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $labelText';
-          }
-          return null;
-        },
-      decoration: InputDecoration(
-        labelText: labelText
-      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter $labelText';
+        }
+        return null;
+      },
+      decoration: InputDecoration(labelText: labelText),
     );
   }
 }
 
+// Form Field for Edit Profile
 class ProfileFormField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintName;
   final IconData? icon;
   final TextInputType inputType;
+  final int? line;
 
   const ProfileFormField({
     this.controller,
     this.hintName,
     this.icon,
     this.inputType = TextInputType.text,
+    this.line,
     Key? key,
   }) : super(key: key);
 
@@ -106,6 +109,7 @@ class ProfileFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: inputType,
+        maxLines: line,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter $hintName';
@@ -123,7 +127,12 @@ class ProfileFormField extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(color: Colors.blue),
           ),
-          prefixIcon: Icon(icon),
+          prefixIcon: line == 6
+            ? Padding(
+                padding: const EdgeInsetsDirectional.only(bottom: 105),
+                child: Icon(icon),
+              )
+            : Icon(icon),
           hintText: 'Enter $hintName',
           labelText: hintName,
           filled: true,

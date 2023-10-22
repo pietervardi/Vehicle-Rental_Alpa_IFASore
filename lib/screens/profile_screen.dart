@@ -12,8 +12,7 @@ import 'package:vehicle_rental/utils/helper.dart';
 import 'package:vehicle_rental/utils/message.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final UserModel? user;
-  const ProfileScreen({Key? key, this.user}) : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -22,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final db = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
+
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -32,21 +32,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ToastContext().init(context);
   }
 
+  // get Current Email stored in SharedPreferences
+  Future<String?> getEmailFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    return email;
+  }
+
+  // change New Password
   Future<void> changePassword() async {
     String currentPassword = currentPasswordController.text;
     String newPassword = newPasswordController.text;
     String confirmPassword = confirmPasswordController.text;
 
+    // validate input
     if (_formKey.currentState!.validate()) {
+      // check if password match
       if (newPassword != confirmPassword) {
         return alertDialog(context, 'Password Mismatch');
       } else {
         _formKey.currentState!.save();
         
-        final UserModel? user = await db.getLoginUser(widget.user!.email.toString());
+        // get Login User data
+        String? email = await getEmailFromSharedPreferences();
+        final UserModel? user = await db.getLoginUser(email.toString());
 
         if (user != null) {
-          final result = await db.updatePassword(user, currentPassword, newPassword);
+          // Store new Password
+          final result = await db.updatePassword(
+            user, 
+            currentPassword, 
+            newPassword
+          );
 
           if (result == -1 && mounted) {
             return alertDialog(context, 'User Not Found');
@@ -54,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return alertDialog(context, 'Incorrect Current Password');
           } else {
             if(mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Password Changed Successfully'));
+              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Update Password'));
               Navigator.pop(context);
             }
           }
@@ -63,39 +80,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // Delete Account
   Future<void> deleteAccount(String email) async {
     final UserModel? user = await db.getLoginUser(email);
+
     if (user != null) {
+      // delete account by email
       final int result = await db.deleteUser(user.email.toString());
       if (mounted) {
         if (result > 0) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const LoginScreen()));
-          ScaffoldMessenger.of(context)
-              .showSnackBar(buildSnackBarDanger('Account Deleted'));
+            context, MaterialPageRoute
+            (builder: (_) => const LoginScreen())
+          );
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
         } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(buildSnackBarDanger('Account Deletion Failed'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
         }
       }
     }
   }
 
+  // Clear email in SharedPreferences
   Future<void> clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('email');
   }
 
+  // wrapper function
   void deleteAccountWrapper() async {
+    String? email = await getEmailFromSharedPreferences();
     await clearSharedPreferences();
-    await deleteAccount(widget.user!.email.toString());
+    await deleteAccount(email.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<UserModel?>(
-        future: db.getLoginUser(widget.user!.email.toString()),
+        future: getEmailFromSharedPreferences().then((email) => db.getLoginUser(email.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -127,42 +150,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             snapshot.data!.name.toString(),
                             style: const TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
+                              fontSize: 22, 
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                           Text(
-                            snapshot.data!.username.toString(),
+                            '@${snapshot.data!.username.toString()}',
                             style: const TextStyle(
-                                fontSize: 18,
-                                color: gray,
-                                fontWeight: FontWeight.w500),
+                              fontSize: 18,
+                              color: gray,
+                              fontWeight: FontWeight.w500
+                            ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
                           ),
-                          GestureDetector(
-                            onTap: () {
+                          TextButton(
+                            onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => EditProfileScreen(user: snapshot.data,)));
-                            },
-                            child: const MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Text(
-                                'Edit Profile',
-                                style: TextStyle(
-                                  color: primaryButton,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                  builder: (_) => EditProfileScreen(user: snapshot.data,)
+                                )
+                              );
+                            }, 
+                            child: const Text(
+                              'Edit Profile',
+                              style: TextStyle(
+                                color: primaryButton,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ),
+                            )
                           )
                         ],
                       ),
@@ -170,23 +195,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 const Text(
                   'About',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20, 
+                    fontWeight: FontWeight.w600
+                  ),
                 ),
-                Text(
-                  snapshot.data!.about.toString(),
-                  textAlign: TextAlign.justify,
+                SizedBox(
+                  height: 100,
+                  child: Text(
+                    snapshot.data!.about.toString(),
+                    textAlign: TextAlign.justify,
+                  ),
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
+                const SizedBox(height: 10),
                 ProfileButton(
                   icon: Icons.lock_outlined,
                   title: 'Change Password',
                   onPressed: () {
+                    resetFormFields();
                     showChangePasswordDialog(context);
                   },
                 ),
@@ -220,6 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Dialog for Change Password
   void showChangePasswordDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -255,7 +286,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  resetFormFields();
                 },
                 child: const Text('Cancel'),
               ),
@@ -272,6 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Reset Form Field
   void resetFormFields() {
     currentPasswordController.text = '';
     newPasswordController.text = '';

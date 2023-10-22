@@ -19,6 +19,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final db = DatabaseHelper();
+
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController usernameCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
@@ -33,12 +34,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   register() async {
     String name = nameCtrl.text;
-    String username = usernameCtrl.text;
+    String username = usernameCtrl.text.toLowerCase();
     String email = emailCtrl.text;
     String passwd = passwordCtrl.text;
     String cpasswd = confirmPasswordCtrl.text;
 
+    // validate input
     if (_formKey.currentState!.validate()) {
+      // check if password match
       if (passwd != cpasswd) {
         alertDialog(context, 'Password Mismatch');
       } else {
@@ -49,9 +52,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           username: username,
           email: email,
           password: passwd,
-          about: ''
+          about: '-'
         );
 
+        // create user account
         int result = await db.signup(userModel);
         if (mounted) {
           if(result == -1) {
@@ -89,9 +93,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Text(
                   'REGISTER',
                   style: GoogleFonts.roboto(
-                      fontSize: 40,
-                      color: signText,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 40,
+                    color: signText,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 20),
@@ -102,59 +107,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextFormField(
-                            controller: nameCtrl,
-                            icon: Icons.person,
-                            inputType: TextInputType.name,
-                            hintName: 'Name'),
+                          controller: nameCtrl,
+                          icon: Icons.person,
+                          inputType: TextInputType.name,
+                          hintName: 'Name'
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
                         CustomTextFormField(
-                            controller: usernameCtrl,
-                            icon: Icons.person_outline,
-                            inputType: TextInputType.name,
-                            hintName: 'Username'),
+                          controller: usernameCtrl,
+                          icon: Icons.person_outline,
+                          inputType: TextInputType.name,
+                          hintName: 'Username'
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
                         CustomTextFormField(
-                            controller: emailCtrl,
-                            icon: Icons.email_outlined,
-                            inputType: TextInputType.emailAddress,
-                            hintName: 'Email'),
+                          controller: emailCtrl,
+                          icon: Icons.email_outlined,
+                          inputType: TextInputType.emailAddress,
+                          hintName: 'Email'
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
                         CustomTextFormField(
-                            controller: passwordCtrl,
-                            icon: Icons.lock_outlined,
-                            isObscureText: true,
-                            hintName: 'Password'),
+                          controller: passwordCtrl,
+                          icon: Icons.lock_outlined,
+                          isObscureText: true,
+                          hintName: 'Password'
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
                         CustomTextFormField(
-                            controller: confirmPasswordCtrl,
-                            icon: Icons.lock_outlined,
-                            isObscureText: true,
-                            hintName: 'Confirm Password'),
+                          controller: confirmPasswordCtrl,
+                          icon: Icons.lock_outlined,
+                          isObscureText: true,
+                          hintName: 'Confirm Password'
+                        ),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30, bottom: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(20)
+                      ),
                       backgroundColor: primaryButton,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 15)),
+                        horizontal: 110, 
+                        vertical: 20
+                      )
+                    ),
                     onPressed: register,
                     child: const Text(
                       'REGISTER',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 20),
                     )),
                 ),
                 Row(
@@ -171,7 +185,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       )
                     )
                   ],
-                )
+                ),
+                const SizedBox(height: 20,)
               ]),
             ),
           ),

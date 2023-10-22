@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 
-class ProfileButton extends StatelessWidget {
+class ProfileButton extends StatefulWidget {
   final IconData icon;
   final String title;
   final VoidCallback onPressed;
@@ -10,38 +10,55 @@ class ProfileButton extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.onPressed,
-    Key? key
+    Key? key,
   }) : super(key: key);
 
   @override
+  _ProfileButtonState createState() => _ProfileButtonState();
+}
+
+class _ProfileButtonState extends State<ProfileButton> {
+  bool isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          isHovered = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          isHovered = false;
+        });
+      },
+      child: GestureDetector(
+        onTap: widget.onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 Icon(
-                  icon,
+                  widget.icon,
                   size: 25,
-                  color: gray,
+                  color: isHovered ? primaryButton : gray,
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  title,
-                  style: const TextStyle(
+                  widget.title,
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: isHovered ? primaryButton : null,
                   ),
                 ),
               ],
             ),
-            const Icon(
+            Icon(
               Icons.keyboard_arrow_right_outlined,
-              color: gray,
+              color: isHovered ? primaryButton : gray,
             ),
           ],
         ),

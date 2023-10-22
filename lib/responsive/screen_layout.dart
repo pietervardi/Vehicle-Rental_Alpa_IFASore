@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vehicle_rental/database/database_helper.dart';
-import 'package:vehicle_rental/models/user_model.dart';
-import 'package:vehicle_rental/screens/book_screen.dart';
-import 'package:vehicle_rental/screens/home_screen.dart';
-import 'package:vehicle_rental/screens/notification_screen.dart';
-import 'package:vehicle_rental/screens/profile_screen.dart';
+import 'package:vehicle_rental/utils/global_variable.dart';
 import 'package:vehicle_rental/utils/appbar.dart';
 
 class ScreenLayout extends StatefulWidget {
   final int page;
-
   const ScreenLayout({Key? key, this.page = 0}) : super(key: key);
 
   @override
@@ -21,15 +14,12 @@ class ScreenLayout extends StatefulWidget {
 class _ScreenLayoutState extends State<ScreenLayout> {
   int _page = 0;
   late PageController pageController;
-  final db = DatabaseHelper();
-  UserModel? loggedInUser;
 
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: widget.page);
     onPageChanged(widget.page);
-    loadUserFromDatabase();
   }
 
   @override
@@ -48,20 +38,6 @@ class _ScreenLayoutState extends State<ScreenLayout> {
     pageController.jumpToPage(page);
   }
 
-  Future<void> loadUserFromDatabase() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email = prefs.getString('email');
-
-    if (email != null) {
-      UserModel? user = await db.getLoginUser(email);
-      if (user != null) {
-        setState(() {
-          loggedInUser = user;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,12 +46,7 @@ class _ScreenLayoutState extends State<ScreenLayout> {
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const HomeScreen(),
-          const BookScreen(),
-          const NotificationScreen(),
-          ProfileScreen(user: loggedInUser)
-        ],
+        children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
         items: const <BottomNavigationBarItem>[

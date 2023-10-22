@@ -19,10 +19,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final db = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
-  final db = DatabaseHelper();
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   login() async {
+    // validate input
     if (_formKey.currentState!.validate()) {
       String email = emailCtrl.text;
       String passwd = passwordCtrl.text;
@@ -40,19 +42,26 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwd,
       );
 
+      // login to account
       var response = await db.login(userModel);
       if (response == true) {
+        // if email and password match -> store the email in SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('email', email);
 
         if (!mounted) return;
+        // navigate to ScreenLayout
         Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const ScreenLayout())
+          context, MaterialPageRoute(
+            builder: (context) => const ScreenLayout()
+          )
         );
+        // Success Message
         ScaffoldMessenger.of(context).showSnackBar(
           buildSnackBarSuccess('Login')
         );
       } else {
+        // if doesnt match
         if (mounted) {
           alertDialog(context, 'Email or Password is Incorrect');
         }
@@ -113,35 +122,40 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          backgroundColor: primaryButton,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 120, vertical: 20)),
-                      onPressed: login,
-                      child: const Text(
-                        'LOGIN',
-                        style: TextStyle(fontSize: 20),
-                      )),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      backgroundColor: primaryButton,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 120, 
+                        vertical: 20)
+                      ),
+                    onPressed: login,
+                    child: const Text(
+                      'LOGIN',
+                      style: TextStyle(fontSize: 20),
+                    )
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account ?"),
                     TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const RegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(color: primaryButton),
-                        ))
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Sign up',
+                        style: TextStyle(color: primaryButton),
+                      )
+                    )
                   ],
                 ),
               ]),

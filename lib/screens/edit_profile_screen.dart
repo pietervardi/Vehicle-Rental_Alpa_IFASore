@@ -19,8 +19,9 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
   final db = DatabaseHelper();
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController usernameCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
@@ -28,10 +29,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   updateProfile() async {
     String name = nameCtrl.text;
-    String username = usernameCtrl.text;
+    String username = usernameCtrl.text.toLowerCase();
     String email = emailCtrl.text;
     String about = aboutCtrl.text;
 
+    // validate input
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -43,18 +45,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         password: widget.user!.password,
         about: about
       );
-
+      
+      // set new inputted email into SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('email', email);
 
+      // store updated user data
       int result = await db.updateUser(userModel);
       if (mounted) {
         if(result == -1) {
           alertDialog(context, 'Email or Username already exists');
         } else {
+          // navigate to ScreenLayout(ProfileScreen)
           Navigator.push(context, MaterialPageRoute(
             builder: (context) => const ScreenLayout(page: 3)
           ));
+          // Success Message
           ScaffoldMessenger.of(context).showSnackBar(
             buildSnackBarSuccess('Update Profile')
           );
@@ -94,7 +100,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -102,58 +108,71 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const Center(
                 child: Text(
                   'Edit Profile',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 30, 
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 30,
               ),
               ProfileFormField(
-                  controller: nameCtrl,
-                  icon: Icons.person,
-                  inputType: TextInputType.name,
-                  hintName: 'Name'),
+                controller: nameCtrl,
+                icon: Icons.person,
+                inputType: TextInputType.name,
+                hintName: 'Name'
+              ),
               const SizedBox(
-                height: 15,
+                height: 20,
               ),
               ProfileFormField(
-                  controller: usernameCtrl,
-                  icon: Icons.person_outline,
-                  inputType: TextInputType.name,
-                  hintName: 'Username'),
+                controller: usernameCtrl,
+                icon: Icons.person_outline,
+                inputType: TextInputType.name,
+                hintName: 'Username'
+              ),
               const SizedBox(
-                height: 15,
+                height: 20,
               ),
               ProfileFormField(
-                  controller: emailCtrl,
-                  icon: Icons.email_outlined,
-                  inputType: TextInputType.emailAddress,
-                  hintName: 'Email'),
+                controller: emailCtrl,
+                icon: Icons.email_outlined,
+                inputType: TextInputType.emailAddress,
+                hintName: 'Email'
+              ),
               const SizedBox(
-                height: 15,
+                height: 20,
               ),
               ProfileFormField(
-                  controller: aboutCtrl,
-                  icon: Icons.email_outlined,
-                  inputType: TextInputType.emailAddress,
-                  hintName: 'About'),
-              const SizedBox(
-                height: 15,
+                controller: aboutCtrl,
+                icon: Icons.info_outlined,
+                inputType: TextInputType.emailAddress,
+                line: 6,
+                hintName: 'About'
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30, bottom: 10),
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        backgroundColor: primaryButton,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 15)),
-                    onPressed: updateProfile,
-                    child: const Text(
-                      'UPDATE',
-                      style: TextStyle(fontSize: 18),
-                    )),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  backgroundColor: primaryButton,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 60, 
+                    vertical: 20
+                  )
+                ),
+                onPressed: updateProfile,
+                child: const Text(
+                  'UPDATE',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700
+                  ),
+                )
               ),
             ],
           ),

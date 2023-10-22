@@ -10,6 +10,7 @@ class DatabaseHelper {
   final int databaseVersion = 1;
   final String table = 'user';
 
+  // Initialization Database
   Future<Database> initDB() async {
     if (_database != null) return _database!;
 
@@ -17,6 +18,7 @@ class DatabaseHelper {
     return _database!;
   }
 
+  // Open Database
   Future<Database> _openDatabase() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, databaseName);
@@ -24,6 +26,7 @@ class DatabaseHelper {
     return openDatabase(path, version: databaseVersion, onCreate: _onCreate);
   }
 
+  // Create Database
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(
         'CREATE TABLE $table (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, about TEXT)');
@@ -33,15 +36,17 @@ class DatabaseHelper {
   Future<bool> login(UserModel user) async {
     try {
       final Database db = await initDB();
+
+      // Check if Email Account exists
       var result = await db.query(
         table,
         where: 'email = ?',
         whereArgs: [user.email],
       );
       if (result.isNotEmpty) {
+        // if exists Match Password
         final storedPassword = result.first['password'] as String;
-        final matchPassword =
-            BCrypt.checkpw(user.password as String, storedPassword);
+        final matchPassword = BCrypt.checkpw(user.password as String, storedPassword);
         if (matchPassword) {
           return true;
         }
@@ -57,6 +62,7 @@ class DatabaseHelper {
     try {
       final Database db = await initDB();
 
+      // Check if inputted Email or Username exists
       final existingUser = await db.query(
         table,
         where: 'email = ? OR username = ?',
@@ -66,6 +72,7 @@ class DatabaseHelper {
       if (existingUser.isNotEmpty) {
         return -1;
       } else {
+        // if doesnt exists -> hash the password to store (BCrypt)
         user.password = BCrypt.hashpw(user.password as String, BCrypt.gensalt());
         return db.insert(table, user.toMap());
       }
@@ -103,36 +110,11 @@ class DatabaseHelper {
   }
 
   // Update User
-  // Future<int> updateUser(UserModel user) async {
-  //   try {
-  //     final Database db = await initDB();
-
-  //     final existingUser = await db.query(
-  //       table,
-  //       where: 'email = ? OR username = ?',
-  //       whereArgs: [user.email, user.username],
-  //     );
-
-  //     if (existingUser.isNotEmpty) {
-  //       return -1;
-  //     } else {
-  //       var res = await db.update(
-  //         table, 
-  //         user.toMap(), 
-  //         where: 'id = ?', 
-  //         whereArgs: [user.id]
-  //       );
-  //       return res;
-  //     }
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
-
   Future<int> updateUser(UserModel user) async {
   try {
     final Database db = await initDB();
 
+    // Check if inputted Email or Username exists
     final existingUser = await db.query(
       table,
       where: 'email = ? OR username = ?',
@@ -148,6 +130,7 @@ class DatabaseHelper {
       }
     }
 
+    // if doesnt exists -> store new updated data
     var res = await db.update(
       table, 
       user.toMap(), 
@@ -160,22 +143,34 @@ class DatabaseHelper {
   }
 }
 
-
   // Update Password
   Future<int> updatePassword(
-      UserModel user, String currentPassword, String newPassword) async {
+    UserModel user, 
+    String currentPassword, 
+    String newPassword
+  ) async {
     try {
       final Database db = await initDB();
-
+      
+      // Check if account exists
       final UserModel? existingUser = await getLoginUser(user.email as String);
 
       if (existingUser != null) {
-        final isCurrentPasswordCorrect =
-            BCrypt.checkpw(currentPassword, user.password as String);
+        // if exists -> check current password (stored in db)
+        final isCurrentPasswordCorrect = BCrypt.checkpw(
+          currentPassword, 
+          user.password as String
+        );
         if (isCurrentPasswordCorrect) {
+          // if match -> hash the new inputted password
           user.password = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-          var res = await db.update(table, {'password': user.password},
-              where: 'email = ?', whereArgs: [user.email]);
+          // store the new password
+          var res = await db.update(
+            table, 
+            {'password': user.password},
+            where: 'email = ?', 
+            whereArgs: [user.email]
+          );
           return res;
         } else {
           return -2;
