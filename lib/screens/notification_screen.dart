@@ -10,8 +10,16 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Text('Notification'),
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          'NO NOTIFICATION',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold
+          ),
+        )
+      ),
     );
   }
 }

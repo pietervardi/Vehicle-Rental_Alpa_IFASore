@@ -1,46 +1,35 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/message.dart';
 
-class CarCard extends StatelessWidget {
+class BookedCard extends StatelessWidget {
   final int id;
   final String name;
   final String brand;
   final String image;
-  final int price;
   final VoidCallback onPressed;
 
-  const CarCard({
+  const BookedCard({
     Key? key,
     required this.id,
     required this.name,
     required this.brand,
     required this.image,
-    required this.price,
     required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    // Format Rupiah
-    final currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp.');
-
     // Update Data (patch)
     Future<void> updateBook(int vehicleId) async {
       final apiUrl = 'http://localhost:5000/vehicles/$vehicleId';
       try {
-        final now = DateTime.now();
-        final formattedDate = DateFormat('dd MMMM y - HH:mm').format(now);
-        final data = {
-          'book': true,
-          'date': formattedDate,
-        };
+        final data = {'book': false, 'date': null};
         final jsonData = jsonEncode(data);
         final response = await http.patch(
           Uri.parse(apiUrl),
@@ -51,9 +40,9 @@ class CarCard extends StatelessWidget {
         );
         if (response.statusCode == 200 && context.mounted) {
           Navigator.of(context).pushReplacement(NoAnimationPageRoute(
-            builder: (context) => const ScreenLayout(page: 1),
+            builder: (context) => const ScreenLayout(page: 0),
           ));
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Book Car'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Unbook Car'));
         } else {
           throw Exception('Failed to update');
         }
@@ -96,65 +85,39 @@ class CarCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 5,),
             Image.asset(
               image,
               width: 250,
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 5,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5, left: 25),
-                  child: Row(
-                    children: [
-                      Text(
-                        currencyFormat.format(price),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          fontFamily: "arial"
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: gray,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20)
                         ),
                       ),
-                      const Text(
-                        ' /day',
-                        style: TextStyle(
-                          fontSize: 13, 
-                          fontFamily: "arial"
-                        ),
+                    ),
+                    onPressed: () {
+                      updateBook(id);
+                    },
+                    child: const Text(
+                      'UNBOOK',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 17
                       ),
-                    ],
+                    )
                   ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 50, 
-                      vertical: 20
-                    ),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(20),
-                        topLeft: Radius.circular(35)
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    updateBook(id);
-                  },
-                  child: const Text(
-                    'BOOK',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900, 
-                      fontSize: 17
-                    ),
-                  ))
+                )
               ],
             )
           ],

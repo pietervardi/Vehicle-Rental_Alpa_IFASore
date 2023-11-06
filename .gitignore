@@ -42,3 +42,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ignore node_modules & dev.sqlite inside the api folder
+api/node_modules/
+api/data/dev.sqlite

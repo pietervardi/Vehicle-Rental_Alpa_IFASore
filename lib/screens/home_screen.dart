@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:vehicle_rental/utils/data.dart';
+import 'package:http/http.dart' as http;
+import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/models/car_model.dart';
 import 'package:vehicle_rental/components/car_card.dart';
 import 'package:vehicle_rental/screens/detail_screen.dart';
@@ -15,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Car> loadedCars = [];
-  List<Car> cars = getCarList();
+  List<Car> cars = [];
   final StreamController<List<Car>> _carStreamController = StreamController<List<Car>>();
   int initialLoadCount = 5;
   int totalLoadedCount = 0;
@@ -35,20 +36,43 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  // Load Car
   Future<void> _loadInitialCars() async {
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final List<Car> apiCars = await fetchCarData();
+      cars = apiCars;
 
-    if (totalLoadedCount < cars.length) {
-      int endIndex = totalLoadedCount + initialLoadCount;
-      endIndex = endIndex > cars.length ? cars.length : endIndex;
-      loadedCars.addAll(cars.sublist(totalLoadedCount, endIndex));
-      totalLoadedCount = endIndex;
-      _carStreamController.add(loadedCars);
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (totalLoadedCount < cars.length) {
+        int endIndex = totalLoadedCount + initialLoadCount;
+        endIndex = endIndex > cars.length ? cars.length : endIndex;
+        loadedCars.addAll(cars.sublist(totalLoadedCount, endIndex));
+        totalLoadedCount = endIndex;
+        _carStreamController.add(loadedCars);
+      }
+    } catch (error) {
+      _carStreamController.addError(error);
     }
   }
 
+  // Get Data from API
+  Future<List<Car>> fetchCarData() async {
+    final response = await http.get(Uri.parse('http://localhost:5000/vehicles'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      final List<Car> cars = data.map((json) => Car.fromJson(json)).toList();
+      final unbookedCars = cars.where((car) => !car.book).toList();
+      return unbookedCars;
+    } else {
+      throw Exception('Failed to load car data');
+    }
+  }
+
+  // Load Car
   Future<void> _loadMoreCars() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
     if (totalLoadedCount < cars.length) {
       int endIndex = totalLoadedCount + initialLoadCount;
@@ -77,13 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Row(
                 children: [
-                  SizedBox(height: 50,),
+                  SizedBox(
+                    height: 50,
+                  ),
                   Text(
                     ' Choose ',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     'a Car',
@@ -98,11 +121,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 initialData: const [],
                 builder: (BuildContext context, AsyncSnapshot<List<Car>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return _buildSkeletonLoader(context);
+                    return _buildSkeletonLoader();
                   }
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text('Error: ${snapshot.error}'),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text('Error: ${snapshot.error}'),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: _loadInitialCars,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
                     );
                   }
                   final List<Car> displayedCars = snapshot.data ?? [];
@@ -113,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Column(
                           children: [
                             CarCard(
+                              id: car.id,
                               name: car.name,
                               brand: car.brand,
                               image: car.image,
@@ -143,41 +182,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSkeletonLoader(BuildContext context) {
+  // Load Skeleton
+  Widget _buildSkeletonLoader() {
     return Column(
-      children: List.generate(
-        initialLoadCount, (index) =>  skeletonLoader(context)
-      ),
-    );
-  }
-
-  Widget skeletonLoader(BuildContext context) {
-    final Brightness brightness = Theme.of(context).brightness;
-
-    Color baseColor;
-    Color highlightColor;
-
-    if (brightness == Brightness.dark) {
-      baseColor = Colors.white.withOpacity(0.1);
-      highlightColor = Colors.white.withOpacity(0.05);
-    } else {
-      baseColor = Colors.grey.shade300;
-      highlightColor = Colors.grey.shade100;
-    }
-
-    return Shimmer.fromColors(
-      baseColor: baseColor,
-      highlightColor: highlightColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Container(
-          height: 250,
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-      ),
+      children: List.generate(initialLoadCount, (index) => const SkeletonLoader()),
     );
   }
 }
