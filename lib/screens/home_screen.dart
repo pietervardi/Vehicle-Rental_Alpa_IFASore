@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Load Car
+  // Load More Car
   Future<void> _loadMoreCars() async {
     await Future.delayed(const Duration(seconds: 1));
 

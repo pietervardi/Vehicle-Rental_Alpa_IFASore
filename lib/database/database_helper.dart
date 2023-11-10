@@ -111,37 +111,37 @@ class DatabaseHelper {
 
   // Update User
   Future<int> updateUser(UserModel user) async {
-  try {
-    final Database db = await initDB();
+    try {
+      final Database db = await initDB();
 
-    // Check if inputted Email or Username exists
-    final existingUser = await db.query(
-      table,
-      where: 'email = ? OR username = ?',
-      whereArgs: [user.email, user.username],
-    );
+      // Check if inputted Email or Username exists
+      final existingUser = await db.query(
+        table,
+        where: 'email = ? OR username = ?',
+        whereArgs: [user.email, user.username],
+      );
 
-    if (existingUser.isNotEmpty) {
-      for (var userMap in existingUser) {
-        UserModel existing = UserModel.fromMap(userMap);
-        if (existing.id != user.id) {
-          return -1;
+      if (existingUser.isNotEmpty) {
+        for (var userMap in existingUser) {
+          UserModel existing = UserModel.fromMap(userMap);
+          if (existing.id != user.id) {
+            return -1;
+          }
         }
       }
-    }
 
-    // if doesnt exists -> store new updated data
-    var res = await db.update(
-      table, 
-      user.toMap(), 
-      where: 'id = ?', 
-      whereArgs: [user.id]
-    );
-    return res;
-  } catch (e) {
-    rethrow;
+      // if doesnt exists -> store new updated data
+      var res = await db.update(
+        table, 
+        user.toMap(), 
+        where: 'id = ?', 
+        whereArgs: [user.id]
+      );
+      return res;
+    } catch (e) {
+      rethrow;
+    }
   }
-}
 
   // Update Password
   Future<int> updatePassword(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vehicle_rental/responsive/screen_layout.dart';
+import 'package:vehicle_rental/screens/login_screen.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 
 class OnboardModel {
@@ -74,7 +74,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               _storeOnboardInfo();
               Navigator.pushReplacement(
                 context, MaterialPageRoute(
-                  builder: (context) => const ScreenLayout()
+                  builder: (context) => const LoginScreen()
                 )
               );
             },
@@ -158,7 +158,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       await _storeOnboardInfo();
                       if (mounted) {
                         Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => const ScreenLayout())
+                          MaterialPageRoute(builder: (context) => const LoginScreen())
                         );
                       }
                     }
