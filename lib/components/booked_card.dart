@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
+import 'package:vehicle_rental/utils/api_url.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/message.dart';
 
@@ -27,7 +28,7 @@ class BookedCard extends StatelessWidget {
 
     // Update Data (patch)
     Future<void> updateBook(int vehicleId) async {
-      final apiUrl = 'http://localhost:5000/vehicles/$vehicleId';
+      final apiUrl = ApiUrl.updateVehicleUrl(vehicleId);
       try {
         final data = {'book': false, 'date': null};
         final jsonData = jsonEncode(data);
@@ -98,7 +99,7 @@ class BookedCard extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: gray,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           bottomRight: Radius.circular(20),

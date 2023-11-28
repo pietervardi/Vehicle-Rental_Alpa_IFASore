@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "556037360093",
+    "project_id": "alpha-335dd",
+    "storage_bucket": "alpha-335dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556037360093:android:c94bb092d53c738ccbce34",
+        "android_client_info": {
+          "package_name": "com.example.vehicle_rental"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJnTDeUUFaVadkiUDWYAXfeeIhUooNRhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

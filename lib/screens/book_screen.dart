@@ -5,6 +5,7 @@ import 'package:vehicle_rental/components/booked_card.dart';
 import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/models/car_model.dart';
 import 'package:vehicle_rental/screens/book_detail_screen.dart';
+import 'package:vehicle_rental/utils/api_url.dart';
 
 class BookScreen extends StatefulWidget {
   const BookScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _BookScreenState extends State<BookScreen> {
 
   // Get Data from API
   Future<List<Car>> fetchCarData() async {
-    final response = await http.get(Uri.parse('http://localhost:5000/vehicles'));
+    final response = await http.get(Uri.parse(ApiUrl.getVehiclesUrl()));
     await Future.delayed(const Duration(seconds: 1));
 
     if (response.statusCode == 200) {

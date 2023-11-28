@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
+import 'package:vehicle_rental/utils/api_url.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/message.dart';
 
@@ -33,7 +34,7 @@ class CarCard extends StatelessWidget {
 
     // Update Data (patch)
     Future<void> updateBook(int vehicleId) async {
-      final apiUrl = 'http://localhost:5000/vehicles/$vehicleId';
+      final apiUrl = ApiUrl.updateVehicleUrl(vehicleId);
       try {
         final now = DateTime.now();
         final formattedDate = DateFormat('dd MMMM y - HH:mm').format(now);
@@ -135,8 +136,8 @@ class CarCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.amber,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 50, 
-                      vertical: 20
+                      horizontal: 40, 
+                      vertical: 15
                     ),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(

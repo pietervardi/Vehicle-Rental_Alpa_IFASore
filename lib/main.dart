@@ -7,9 +7,9 @@ import 'package:vehicle_rental/screens/splash_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 int? isviewed;
-Future main() async {
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+void main() {
+  // sqfliteFfiInit();
+  // databaseFactory = databaseFactoryFfi;
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

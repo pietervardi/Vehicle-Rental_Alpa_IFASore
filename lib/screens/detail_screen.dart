@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
+import 'package:vehicle_rental/utils/api_url.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/message.dart';
 import 'package:vehicle_rental/utils/theme_provider.dart';
@@ -19,7 +20,7 @@ class CarDetailScreen extends StatelessWidget {
 
     // Update Data (patch)
     Future<void> updateBook(int vehicleId) async {
-      final apiUrl = 'http://localhost:5000/vehicles/$vehicleId';
+      final apiUrl = ApiUrl.updateVehicleUrl(vehicleId);
       try {
         final now = DateTime.now();
         final formattedDate = DateFormat('dd MMMM y - HH:mm').format(now);

@@ -6,6 +6,7 @@ import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/models/car_model.dart';
 import 'package:vehicle_rental/components/car_card.dart';
 import 'package:vehicle_rental/screens/detail_screen.dart';
+import 'package:vehicle_rental/utils/api_url.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Get Data from API
   Future<List<Car>> fetchCarData() async {
-    final response = await http.get(Uri.parse('http://localhost:5000/vehicles'));
+    final response = await http.get(Uri.parse(ApiUrl.getVehiclesUrl()));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
