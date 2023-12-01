@@ -40,51 +40,54 @@ class _ScreenLayoutState extends State<ScreenLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: onPageChanged,
-        physics: const NeverScrollableScrollPhysics(),
-        children: homeScreenItems,
-      ),
-      bottomNavigationBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Tooltip(
-              message: 'Home',
-              child: Icon(
-                Icons.home_outlined,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: buildAppBar(context),
+        body: PageView(
+          controller: pageController,
+          onPageChanged: onPageChanged,
+          physics: const NeverScrollableScrollPhysics(),
+          children: homeScreenItems,
+        ),
+        bottomNavigationBar: CupertinoTabBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Tooltip(
+                message: 'Home',
+                child: Icon(
+                  Icons.home_outlined,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Tooltip(
-              message: 'Book',
-              child: Icon(
-                Icons.bookmark_outline,
+            BottomNavigationBarItem(
+              icon: Tooltip(
+                message: 'Book',
+                child: Icon(
+                  Icons.bookmark_outline,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Tooltip(
-              message: 'Notification',
-              child: Icon(
-                Icons.notifications_outlined,
+            BottomNavigationBarItem(
+              icon: Tooltip(
+                message: 'Notification',
+                child: Icon(
+                  Icons.notifications_outlined,
+                ),
               ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: Tooltip(
-              message: 'Profile',
-              child: Icon(
-                Icons.person_outline,
+            BottomNavigationBarItem(
+              icon: Tooltip(
+                message: 'Profile',
+                child: Icon(
+                  Icons.person_outline,
+                ),
               ),
             ),
-          ),
-        ],
-        onTap: navigationTapped,
-        currentIndex: _page,
+          ],
+          onTap: navigationTapped,
+          currentIndex: _page,
+        ),
       ),
     );
   }

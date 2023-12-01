@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
+import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
 import 'package:vehicle_rental/models/user_model.dart';
-import 'package:vehicle_rental/screens/login_screen.dart';
+import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/helper.dart';
 import 'package:vehicle_rental/utils/message.dart';
@@ -17,8 +20,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
   final db = DatabaseHelper();
+  final _formKey = GlobalKey<FormState>();
+  final AuthController _auth = AuthController();
 
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController usernameCtrl = TextEditingController();
@@ -26,10 +30,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordCtrl = TextEditingController();
   final TextEditingController confirmPasswordCtrl = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
     ToastContext().init(context);
+  }
+
+  @override
+  void dispose() {
+    nameCtrl.dispose();
+    usernameCtrl.dispose();
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    confirmPasswordCtrl.dispose();
+    super.dispose();
   }
 
   register() async {
@@ -41,9 +57,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // validate input
     if (_formKey.currentState!.validate()) {
-      // check if password match
+      // check if password match & minimum length 6 characters
       if (passwd != cpasswd) {
         alertDialog(context, 'Password Mismatch');
+      } else if (passwd.length < 6) {
+        alertDialog(context, 'Password must be at least 6 characters');
       } else {
         _formKey.currentState!.save();
 
@@ -55,18 +73,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
           about: '-'
         );
 
+        setState(() {
+          isLoading = true;
+        });
+
         // create user account
         int result = await db.signup(userModel);
-        if (mounted) {
-          if(result == -1) {
-            alertDialog(context, 'Email or Username already exists');
-          } else {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
-            ScaffoldMessenger.of(context).showSnackBar(
-              buildSnackBarSuccess('Register')
-            );
+        if (result == -1 && mounted) {
+          alertDialog(context, 'Email or Username already exists');
+        } else {
+          // if email and password match -> store the email in SharedPreferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('email', email);
+          // Firebase Sign Up
+          User? user = await _auth.signup(email, passwd);
+          if (user != null && mounted) {
+            // navigate to ScreenLayout
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const ScreenLayout()));
+            // Success Message
+            ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Register'));
           }
         }
+
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -154,22 +185,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
+                  child: Visibility(
+                    visible: !isLoading,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        backgroundColor: primaryButton,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 110, 
+                          vertical: 20
+                        )
                       ),
-                      backgroundColor: primaryButton,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 110, 
-                        vertical: 20
-                      )
-                    ),
-                    onPressed: register,
-                    child: const Text(
-                      'REGISTER',
-                      style: TextStyle(fontSize: 20),
-                    )),
+                      onPressed: register,
+                      child: const Text(
+                        'REGISTER',
+                        style: TextStyle(fontSize: 20),
+                      )),
+                  ),
+                ),
+                Visibility(
+                  visible: isLoading,
+                  child: const CircularProgressIndicator(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

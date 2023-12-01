@@ -99,82 +99,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const Center(
-                child: Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    fontSize: 30, 
-                    fontWeight: FontWeight.bold
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const Center(
+                  child: Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 30, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              ProfileFormField(
-                controller: nameCtrl,
-                icon: Icons.person,
-                inputType: TextInputType.name,
-                hintName: 'Name'
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ProfileFormField(
-                controller: usernameCtrl,
-                icon: Icons.person_outline,
-                inputType: TextInputType.name,
-                hintName: 'Username'
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ProfileFormField(
-                controller: emailCtrl,
-                icon: Icons.email_outlined,
-                inputType: TextInputType.emailAddress,
-                hintName: 'Email'
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ProfileFormField(
-                controller: aboutCtrl,
-                icon: Icons.info_outlined,
-                inputType: TextInputType.emailAddress,
-                line: 6,
-                hintName: 'About'
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)
+                const SizedBox(
+                  height: 30,
+                ),
+                ProfileFormField(
+                  controller: nameCtrl,
+                  icon: Icons.person,
+                  inputType: TextInputType.name,
+                  hintName: 'Name'
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ProfileFormField(
+                  controller: usernameCtrl,
+                  icon: Icons.person_outline,
+                  inputType: TextInputType.name,
+                  hintName: 'Username'
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ProfileFormField(
+                  controller: emailCtrl,
+                  icon: Icons.email_outlined,
+                  inputType: TextInputType.emailAddress,
+                  hintName: 'Email'
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ProfileFormField(
+                  controller: aboutCtrl,
+                  icon: Icons.info_outlined,
+                  inputType: TextInputType.emailAddress,
+                  line: 6,
+                  hintName: 'About'
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)
+                    ),
+                    backgroundColor: primaryButton,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 60, 
+                      vertical: 20
+                    )
                   ),
-                  backgroundColor: primaryButton,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 60, 
-                    vertical: 20
+                  onPressed: updateProfile,
+                  child: const Text(
+                    'UPDATE',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700
+                    ),
                   )
                 ),
-                onPressed: updateProfile,
-                child: const Text(
-                  'UPDATE',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700
-                  ),
-                )
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

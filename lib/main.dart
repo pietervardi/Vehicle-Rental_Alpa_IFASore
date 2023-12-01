@@ -1,15 +1,15 @@
 import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/utils/theme_provider.dart';
 import 'package:vehicle_rental/screens/splash_screen.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 int? isviewed;
-void main() {
-  // sqfliteFfiInit();
-  // databaseFactory = databaseFactoryFfi;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
 import 'package:vehicle_rental/components/profile_button.dart';
+import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
 import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/screens/edit_profile_screen.dart';
@@ -21,6 +22,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final db = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
+  final AuthController _auth = AuthController();
 
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
@@ -64,13 +66,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             currentPassword, 
             newPassword
           );
-
           if (result == -1 && mounted) {
             return alertDialog(context, 'User Not Found');
           } else if (result == -2 && mounted) {
             return alertDialog(context, 'Incorrect Current Password');
           } else {
             if(mounted) {
+              // Firebase Update Password
+              _auth.updatePasswordFirebase(
+                email: email,
+                oldPassword: currentPassword,
+                newPassword: newPassword
+              );
               ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Update Password'));
               Navigator.pop(context);
             }
@@ -89,6 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final int result = await db.deleteUser(user.email.toString());
       if (mounted) {
         if (result > 0) {
+          // Firebase Delete Account
+          _auth.deleteUserFirebase();
           Navigator.push(
             context, MaterialPageRoute
             (builder: (_) => const LoginScreen())
@@ -105,13 +114,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> clearSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('email');
+    // Firebase Log Out
+    _auth.logout();
   }
 
   // wrapper function
   void deleteAccountWrapper() async {
     String? email = await getEmailFromSharedPreferences();
-    await clearSharedPreferences();
     await deleteAccount(email.toString());
+    await clearSharedPreferences();
   }
 
   @override
