@@ -5,6 +5,7 @@ import 'package:vehicle_rental/components/form_field.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
 import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
+import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/helper.dart';
 import 'package:vehicle_rental/utils/message.dart';
@@ -57,7 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           alertDialog(context, 'Email or Username already exists');
         } else {
           // navigate to ScreenLayout(ProfileScreen)
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.push(context, NoAnimationPageRoute(
             builder: (context) => const ScreenLayout(page: 3)
           ));
           // Success Message
@@ -71,6 +72,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Provider.of<ThemeProvider>(context).currentTheme == 'dark';
+
     if (widget.user != null) {
       nameCtrl.text = widget.user!.name ?? '';
       usernameCtrl.text = widget.user!.username ?? '';
@@ -81,15 +84,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        title: Text(
+          'Edit Profile',
+          style: TextStyle(
+            fontSize: 30, 
+            fontWeight: FontWeight.bold,
+            color: isDarkMode ? whiteText : black
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         leading: Consumer<ThemeProvider>(
           builder: (context, provider, child) {
-            final isDarkMode = provider.currentTheme == 'dark';
-
             return IconButton(
               icon: Icon(
                 Icons.keyboard_arrow_left_outlined,
-                color: isDarkMode ? Colors.white : Colors.black,
+                color: isDarkMode ? whiteText : black,
                 size: 28,
               ),
               onPressed: () {
@@ -106,17 +116,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             key: _formKey,
             child: Column(
               children: [
-                const Center(
-                  child: Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      fontSize: 30, 
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 ProfileFormField(
                   controller: nameCtrl,

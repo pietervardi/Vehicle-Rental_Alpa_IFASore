@@ -240,7 +240,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       await clearSharedPreferences();
                       if(mounted) {
                         Navigator.push(context,MaterialPageRoute(builder: (_) => const LoginScreen()));
-                        ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Log Out'));
                       }
                     });
                   },

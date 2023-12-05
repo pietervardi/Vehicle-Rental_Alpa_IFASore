@@ -69,13 +69,15 @@ void showConfirmationDialog(BuildContext context, String title, Function() onCon
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               onConfirm();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger(title));
             },
             child: Text(
               title,

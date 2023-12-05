@@ -70,9 +70,9 @@ class _ScreenLayoutState extends State<ScreenLayout> {
             ),
             BottomNavigationBarItem(
               icon: Tooltip(
-                message: 'Notification',
+                message: 'Review',
                 child: Icon(
-                  Icons.notifications_outlined,
+                  Icons.reviews_outlined,
                 ),
               ),
             ),
