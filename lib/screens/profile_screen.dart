@@ -1,13 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
 import 'package:vehicle_rental/components/profile_button.dart';
+import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
+import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
+import 'package:vehicle_rental/models/user_firebase_model.dart';
 import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/screens/edit_profile_screen.dart';
 import 'package:vehicle_rental/screens/login_screen.dart';
+import 'package:vehicle_rental/screens/profile_picture_screen.dart';
+import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/helper.dart';
 import 'package:vehicle_rental/utils/message.dart';
@@ -23,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final db = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
   final AuthController _auth = AuthController();
+  final StorageController _store = StorageController();
 
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
@@ -96,13 +104,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final int result = await db.deleteUser(user.email.toString());
       if (mounted) {
         if (result > 0) {
+          // Firestore Delete User
+          await deleteUserFirestore();
           // Firebase Delete Account
           _auth.deleteUserFirebase();
-          Navigator.push(
-            context, MaterialPageRoute
-            (builder: (_) => const LoginScreen())
-          );
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
+          if (mounted) {
+            Navigator.push(
+              context, MaterialPageRoute
+              (builder: (_) => const LoginScreen())
+            );
+            ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
         }
@@ -118,11 +130,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _auth.logout();
   }
 
-  // wrapper function
+  // Wrapper function
   void deleteAccountWrapper() async {
     String? email = await getEmailFromSharedPreferences();
     await deleteAccount(email.toString());
     await clearSharedPreferences();
+  }
+
+  // Get Single User by ID
+  Stream<UserFirebase?> readUser() async* {
+    final User? currentUser = await _auth.getUser();
+    final docUser = FirebaseFirestore.instance.collection('users').doc(currentUser!.uid);
+
+    yield* docUser.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserFirebase.fromJson(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  // Delete User From Firestore
+  Future<void> deleteUserFirestore() async {
+    final User? currentUser = await _auth.getUser();
+    _store.deleteImage('userImage', currentUser!.uid);
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(currentUser.uid)
+      .delete();
   }
 
   @override
@@ -132,7 +167,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         future: getEmailFromSharedPreferences().then((email) => db.getLoginUser(email.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator()
+            );
           }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -144,21 +181,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: gray
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
-                          'assets/profile/profile.png',
-                          width: 100,
-                          height: 100,
-                        ),
-                      ),
+                    StreamBuilder<UserFirebase?>(
+                      stream: readUser(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const SkeletonLoaderProfileScreen();
+                        }
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+                        if(snapshot.hasData) {
+                          final user = snapshot.data;
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(context, NoAnimationPageRoute(
+                                builder: (context) => ProfilePictureScreen(imageUrl: user.imageUrl),
+                              ));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: gray,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: gray
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: user!.imageUrl.isEmpty
+                                  ? Image.asset(
+                                      'assets/profile/profile.png',
+                                      width: 100,
+                                      height: 100,
+                                    )
+                                  : Image.network(
+                                      user.imageUrl,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                              ),
+                            ),
+                          );
+                        }
+                        return Container();
+                      }
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 12),

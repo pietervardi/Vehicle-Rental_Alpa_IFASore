@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/components/form_field.dart';
+import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
 import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
@@ -22,6 +25,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final db = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
+  final AuthController _auth = AuthController();
 
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController usernameCtrl = TextEditingController();
@@ -57,6 +61,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if(result == -1) {
           alertDialog(context, 'Email or Username already exists');
         } else {
+          // Update User Firestore
+          updateUserFirestore(name, username, email, about);
           // navigate to ScreenLayout(ProfileScreen)
           Navigator.push(context, NoAnimationPageRoute(
             builder: (context) => const ScreenLayout(page: 3)
@@ -67,6 +73,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           );
         }
       }
+    }
+  }
+
+  // Update User Firestore
+  Future<void> updateUserFirestore(String name, String username, String email, String about) async {
+    final User? currentUser = await _auth.getUser();
+    final docUser = FirebaseFirestore.instance.collection('users').doc(currentUser!.uid);
+    try {
+      await docUser.update({
+        'name': name,
+        'username': username,
+        'email': email,
+        'about': about
+      });
+    } catch (error) {
+      rethrow;
     }
   }
 

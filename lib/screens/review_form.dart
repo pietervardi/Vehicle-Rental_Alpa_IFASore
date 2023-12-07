@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
 import 'package:vehicle_rental/models/review_model.dart';
-import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/choose_image.dart';
@@ -41,6 +39,7 @@ class _ReviewFormState extends State<ReviewForm> {
     super.dispose();
   }
 
+  // Rating Text
   String getRatingText(double rating) {
     if (rating == 5) {
       return 'Wow!';
@@ -64,18 +63,15 @@ class _ReviewFormState extends State<ReviewForm> {
     return email;
   }
 
+  // Create Review Firestore
   Future<void> createReview() async {
     final docReview = FirebaseFirestore.instance.collection('reviews').doc();
     final User? currentUser = await _auth.getUser();
-
-    String? email = await getEmailFromSharedPreferences();
-    final UserModel? user = await db.getLoginUser(email.toString());
 
     String imageUrl = await _store.uploadImageToStorage('reviewImage', docReview.id, _image!);
 
     final review = Review(
       id: docReview.id,
-      name: user!.name.toString(),
       rate: rating,
       text: textCtrl.text,
       imageUrl: imageUrl,
@@ -89,14 +85,16 @@ class _ReviewFormState extends State<ReviewForm> {
     await docReview.set(json);
   }
 
-  void selectImage() async {
+  // Select Image from Gallery
+  Future<void> selectImage() async {
     Uint8List img = await chooseImage(ImageSource.gallery);
     setState(() {
       _image = img;
     });
   }
 
-  void takePicture() async {
+  // Take Picture from Camera
+  Future<void> takePicture() async {
     Uint8List img = await chooseImage(ImageSource.camera);
     setState(() {
       _image = img;
@@ -335,7 +333,7 @@ class _ReviewFormState extends State<ReviewForm> {
                     Icon(Icons.image, color: Colors.white), // Icon
                     SizedBox(width: 8),
                     Text(
-                      'Choose from Gallery', 
+                      'Choose existing photo', 
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -360,7 +358,7 @@ class _ReviewFormState extends State<ReviewForm> {
                     Icon(Icons.camera_alt, color: Colors.white), // Icon
                     SizedBox(width: 8),
                     Text(
-                      'Take a Picture', 
+                      'Take photo', 
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

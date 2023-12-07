@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
+import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/models/review_model.dart';
+import 'package:vehicle_rental/models/user_firebase_model.dart';
 import 'package:vehicle_rental/screens/review_detail.dart';
 import 'package:vehicle_rental/screens/review_form.dart';
 import 'package:vehicle_rental/utils/animation.dart';
@@ -21,7 +23,9 @@ class ReviewScreen extends StatefulWidget {
 
 class _ReviewScreenState extends State<ReviewScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
+  final StorageController _store = StorageController();
 
+  // Read Collection Review
   Stream<List<Review>> readReviews() => FirebaseFirestore.instance
     .collection('reviews')
     .orderBy('createdAt', descending: true)
@@ -30,6 +34,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
       (doc) => Review.fromJson(doc.data())).toList()
     );
 
+  // Get Single User by ID
+  Stream<UserFirebase?> readUser(String id) async* {
+    final docUser = FirebaseFirestore.instance.collection('users').doc(id);
+
+    yield* docUser.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserFirebase.fromJson(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  // Calculate Rating
   double calculateAverageRating(List<Review> reviews) {
     if (reviews.isEmpty) {
       return 0.0;
@@ -41,6 +58,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return sum / reviews.length;
   }
 
+  // Like Function
   Future<void> likeReview(BuildContext context, String id) async {
     try {
       await FirebaseFirestore.instance
@@ -62,6 +80,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
   }
 
+  // Dislike Function
   Future<void> dislikeReview(BuildContext context, String id) async {
     try {
       await FirebaseFirestore.instance
@@ -83,7 +102,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
   }
 
+  // Delete Review on Firestore + Firebase Storage
   Future<void> deleteReview(String id) async {
+    _store.deleteImage('reviewImage', id);
     await FirebaseFirestore.instance
       .collection('reviews')
       .doc(id)
@@ -197,14 +218,22 @@ class _ReviewScreenState extends State<ReviewScreen> {
       splashFactory: NoSplash.splashFactory,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onTap: () {
+      onTap: () async {
+        UserFirebase? user;
+        await for (var snapshot in readUser(review.userId)) {
+          if (snapshot != null) {
+            user = snapshot;
+            break;
+          }
+        }
         Navigator.push(
           context,
           NoAnimationPageRoute(
             builder: ((context) => ReviewDetail(
               id: review.id,
-              name: review.name,
+              name: user!.name,
               text: review.text,
+              profilePicture: user.imageUrl,
               imageUrl: review.imageUrl,
               createdAt: review.createdAt,
             )),
@@ -216,32 +245,44 @@ class _ReviewScreenState extends State<ReviewScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: const CircleAvatar(
-                backgroundImage: AssetImage('assets/profile/profile.png')
-              ),
-              title: Text(
-                review.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              subtitle: Text(
-                '${review.comments.length.toString()} reply  •  ${review.likes.length.toString()} helped',
-                style: const TextStyle(
-                  fontSize: 13
-                ),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
-                    deleteReview(reviewId)
+            StreamBuilder<UserFirebase?>(
+              stream: readUser(review.userId),
+              builder: (context, snapshot) {
+                if(snapshot.hasData) {
+                  final user = snapshot.data;
+
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: user!.imageUrl.isNotEmpty
+                        ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
+                        : const AssetImage('assets/profile/profile.png'),
+                    ),
+                    title: Text(
+                      user.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${review.comments.length.toString()} reply  •  ${review.likes.length.toString()} helped',
+                      style: const TextStyle(
+                        fontSize: 13
+                      ),
+                    ),
+                    trailing: GestureDetector(
+                      onTap: () {
+                        showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
+                          deleteReview(reviewId)
+                        );
+                      },
+                      child: const Icon(
+                        Icons.more_vert_outlined
+                      )
+                    ),
                   );
-                },
-                child: const Icon(
-                  Icons.more_vert_outlined
-                  )
-                ),
+                }
+                return Container();
+              }
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -342,14 +383,22 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   Text(review.likes.length.toString()),
                   const SizedBox(width: 15,),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      UserFirebase? user;
+                      await for (var snapshot in readUser(review.userId)) {
+                        if (snapshot != null) {
+                          user = snapshot;
+                          break;
+                        }
+                      }
                       Navigator.push(
                         context,
                         NoAnimationPageRoute(
                           builder: ((context) => ReviewDetail(
                             id: review.id,
-                            name: review.name,
+                            name: user!.name,
                             text: review.text,
+                            profilePicture: user.imageUrl,
                             imageUrl: review.imageUrl,
                             createdAt: review.createdAt,
                           )),

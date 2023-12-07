@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
+import 'package:vehicle_rental/models/user_firebase_model.dart';
 import 'package:vehicle_rental/models/user_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/colors.dart';
@@ -77,21 +79,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
           isLoading = true;
         });
 
-        // create user account
-        int result = await db.signup(userModel);
-        if (result == -1 && mounted) {
-          alertDialog(context, 'Email or Username already exists');
-        } else {
-          // if email and password match -> store the email in SharedPreferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('email', email);
-          // Firebase Sign Up
-          User? user = await _auth.signup(email, passwd);
-          if (user != null && mounted) {
-            // navigate to ScreenLayout
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const ScreenLayout()));
-            // Success Message
-            ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Register'));
+        // Firebase Sign Up
+        User? user = await _auth.signup(email, passwd);
+        if (user != null) {
+          // create user account
+          int result = await db.signup(userModel);
+          if (result == -1 && mounted) {
+            alertDialog(context, 'Email or Username already exists');
+          } else {
+            // if email and password match -> store the email in SharedPreferences
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('email', email);
+            // Create User Firestore
+            createUser(name, username, email);
+            if (mounted) {
+              // navigate to ScreenLayout
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ScreenLayout()));
+              // Success Message
+              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Register'));
+            }
           }
         }
 
@@ -100,6 +106,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     }
+  }
+
+  // Create User Firestore
+  Future<void> createUser(String name, String username, String email) async {
+    final User? currentUser = await _auth.getUser();
+    final docUser = FirebaseFirestore.instance.collection('users').doc(currentUser!.uid);
+
+    final user = UserFirebase(
+      id: docUser.id,
+      name: name,
+      username: username,
+      email: email,
+      about: '-',
+      imageUrl: '',
+      createdAt: Timestamp.now()
+    );
+
+    final json = user.toJson();
+    await docUser.set(json);
   }
 
   @override

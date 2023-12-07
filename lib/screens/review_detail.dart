@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
+import 'package:vehicle_rental/models/user_firebase_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/colors.dart';
@@ -12,6 +13,7 @@ class ReviewDetail extends StatefulWidget {
   final String id;
   final String name;
   final String text;
+  final String profilePicture;
   final String imageUrl;
   final Timestamp createdAt;
   const ReviewDetail({
@@ -19,6 +21,7 @@ class ReviewDetail extends StatefulWidget {
     required this.id,
     required this.name,
     required this.text,
+    required this.profilePicture,
     required this.imageUrl,
     required this.createdAt,
   }) : super(key: key);
@@ -37,6 +40,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
     super.dispose();
   }
 
+  // Post Reply Comment
   Future<void> postComment(String text) async {
     try {
       await FirebaseFirestore.instance
@@ -64,14 +68,28 @@ class _ReviewDetailState extends State<ReviewDetail> {
     }
   }
 
+  // Get Single User by ID
+  Stream<UserFirebase?> readUser(String id) async* {
+    final docUser = FirebaseFirestore.instance.collection('users').doc(id);
+
+    yield* docUser.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserFirebase.fromJson(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Provider.of<ThemeProvider>(context).currentTheme == 'dark';
 
     final String name = widget.name;
     final String text = widget.text;
+    final String profilePicture = widget.profilePicture;
     final String imageUrl = widget.imageUrl;
     final Timestamp createdAt = widget.createdAt;
+    
     final commentReference = FirebaseFirestore.instance
       .collection('reviews')
       .doc(widget.id)
@@ -112,8 +130,8 @@ class _ReviewDetailState extends State<ReviewDetail> {
         physics: const BouncingScrollPhysics(),
         children: [
           ListTile(
-            leading: const CircleAvatar(
-              backgroundImage: AssetImage('assets/profile/profile.png')
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(profilePicture)
             ),
             title: Row(
               children: [
@@ -121,7 +139,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
                   '$name  •  ',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14
+                    fontSize: 16
                   ),
                 ),
                 Text(
@@ -226,26 +244,39 @@ class _ReviewDetailState extends State<ReviewDetail> {
                         DateTime time = comment['time'].toDate();
                         return Column(
                           children: [
-                            ListTile(
-                              leading: const CircleAvatar(
-                                backgroundImage: AssetImage('assets/profile/profile.png')
-                              ),
-                              title: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  '${comment['userId']}  •  ${GetTimeAgo.parse(DateTime.parse(time.toString()))}',
-                                  style: const TextStyle(
-                                  ),
-                                ),
-                              ),
-                              subtitle: Text(
-                                comment['text'],
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: isDarkMode ? whiteText : black
-                                ),
-                              ),
+                            StreamBuilder<UserFirebase?>(
+                              stream: readUser(comment['userId']),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  final user = snapshot.data;
+
+                                  return ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage: user!.imageUrl.isNotEmpty
+                                        ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
+                                        : const AssetImage('assets/profile/profile.png'),
+                                    ),
+                                    title: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        '${user.name}  •  ${GetTimeAgo.parse(DateTime.parse(time.toString()))}',
+                                        style: const TextStyle(
+                                          fontSize: 14
+                                        ),
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      comment['text'],
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDarkMode ? whiteText : black
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Container();
+                              }
                             ),
                             const SizedBox(height: 5,),
                             const Divider(
