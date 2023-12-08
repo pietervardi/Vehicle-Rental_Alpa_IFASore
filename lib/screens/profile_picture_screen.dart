@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vehicle_rental/controllers/app_permission_handler.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
@@ -23,6 +24,7 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
   final AuthController _auth = AuthController();
   final StorageController _store = StorageController();
   Uint8List? _image;
+  late final ScaffoldMessengerState messanger;
 
   // Update User Profile Picture to Firestore + Firebase Storage
   Future<void> updateProfilePicture() async {
@@ -55,6 +57,17 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
       _image = img;
     });
   }
+
+  // Permission Handler Storage
+  Future<void> storage() async {
+    StoragePermissionHandler.handleStoragePermission(context, selectImage);
+  }
+
+  // Permission Handler Camera
+  Future<void> camera() async {
+    CameraPermissionHandler.handleCameraPermission(context, takePicture);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,20 +177,20 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  selectImage();
+                  storage();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Background color
+                  backgroundColor: blue,
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, color: Colors.white), // Icon
+                    Icon(Icons.image, color: whiteText),
                     SizedBox(width: 8),
                     Text(
                       'Choose existing photo', 
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
                       )
@@ -189,20 +202,20 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  takePicture();
+                  camera();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Background color
+                  backgroundColor: green,
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt, color: Colors.white), // Icon
+                    Icon(Icons.camera_alt, color: whiteText),
                     SizedBox(width: 8),
                     Text(
                       'Take photo', 
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
                       )

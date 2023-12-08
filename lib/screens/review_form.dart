@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vehicle_rental/controllers/app_permission_handler.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/database/database_helper.dart';
@@ -31,7 +32,6 @@ class _ReviewFormState extends State<ReviewForm> {
   double rating = 0;
   Uint8List? _image;
   TextEditingController textCtrl = TextEditingController();
-  
 
   @override
   void dispose() {
@@ -99,6 +99,16 @@ class _ReviewFormState extends State<ReviewForm> {
     setState(() {
       _image = img;
     });
+  }
+
+  // Permission Handler Storage
+  Future<void> storage() async {
+    StoragePermissionHandler.handleStoragePermission(context, selectImage);
+  }
+
+  // Permission Handler Camera
+  Future<void> camera() async {
+    CameraPermissionHandler.handleCameraPermission(context, takePicture);
   }
 
   @override
@@ -322,20 +332,20 @@ class _ReviewFormState extends State<ReviewForm> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  selectImage();
+                  storage();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Background color
+                  backgroundColor: blue,
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, color: Colors.white), // Icon
+                    Icon(Icons.image, color: whiteText), // Icon
                     SizedBox(width: 8),
                     Text(
                       'Choose existing photo', 
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
                       )
@@ -347,20 +357,20 @@ class _ReviewFormState extends State<ReviewForm> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  takePicture();
+                  camera();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Background color
+                  backgroundColor: green,
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt, color: Colors.white), // Icon
+                    Icon(Icons.camera_alt, color: whiteText), // Icon
                     SizedBox(width: 8),
                     Text(
                       'Take photo', 
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
                       )
