@@ -107,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Firestore Delete User
           await deleteUserFirestore();
           // Firebase Delete Account
-          _auth.deleteUserFirebase();
+          await _auth.deleteUserFirebase();
           if (mounted) {
             Navigator.push(
               context, MaterialPageRoute

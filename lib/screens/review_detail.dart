@@ -19,9 +19,9 @@ class ReviewDetail extends StatefulWidget {
   const ReviewDetail({
     Key? key,
     required this.id,
-    required this.name,
+    this.name = 'User Deleted',
     required this.text,
-    required this.profilePicture,
+    this.profilePicture = '',
     required this.imageUrl,
     required this.createdAt,
   }) : super(key: key);
@@ -165,39 +165,40 @@ class _ReviewDetailState extends State<ReviewDetail> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 260),
-            child: Container(
-              width: 100,
-              height: 100,
-              margin: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 16,
-              ),
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        child: Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
+          if (imageUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 260),
+              child: Container(
+                width: 100,
+                height: 100,
+                margin: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 16,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           const Divider(
             color: gray,
           ),

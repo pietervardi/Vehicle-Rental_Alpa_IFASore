@@ -281,7 +281,33 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ),
                   );
                 }
-                return Container();
+                return ListTile(
+                  leading: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/profile/profile.png'),
+                  ),
+                  title: const Text(
+                    'User Deleted',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${review.comments.length.toString()} reply  •  ${review.likes.length.toString()} helped',
+                    style: const TextStyle(
+                      fontSize: 13
+                    ),
+                  ),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
+                        deleteReview(reviewId)
+                      );
+                    },
+                    child: const Icon(
+                      Icons.more_vert_outlined
+                    )
+                  ),
+                );
               }
             ),
             Padding(
@@ -324,35 +350,36 @@ class _ReviewScreenState extends State<ReviewScreen> {
               ),
             ),
             const SizedBox(height: 20,),
-            Container(
-              width: 100,
-              height: 100,
-              margin: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        child: Image.network(
-                          review.imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    review.imageUrl,
-                    fit: BoxFit.cover,
+            if (review.imageUrl.isNotEmpty)
+              Container(
+                width: 100,
+                height: 100,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          child: Image.network(
+                            review.imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      review.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
             const SizedBox(height: 20,),
             Padding(
               padding: const EdgeInsets.symmetric(

@@ -68,7 +68,11 @@ class _ReviewFormState extends State<ReviewForm> {
     final docReview = FirebaseFirestore.instance.collection('reviews').doc();
     final User? currentUser = await _auth.getUser();
 
-    String imageUrl = await _store.uploadImageToStorage('reviewImage', docReview.id, _image!);
+    String imageUrl = '';
+
+    if (_image != null) {
+      imageUrl = await _store.uploadImageToStorage('reviewImage', docReview.id, _image!);
+    }
 
     final review = Review(
       id: docReview.id,
@@ -340,10 +344,10 @@ class _ReviewFormState extends State<ReviewForm> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, color: whiteText), // Icon
+                    Icon(Icons.image, color: whiteText),
                     SizedBox(width: 8),
                     Text(
-                      'Choose existing photo', 
+                      'Choose existing photo',
                       style: TextStyle(
                         color: whiteText,
                         fontWeight: FontWeight.bold,
