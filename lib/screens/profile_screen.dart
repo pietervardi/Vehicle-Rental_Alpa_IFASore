@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
@@ -59,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_formKey.currentState!.validate()) {
       // check if password match
       if (newPassword != confirmPassword) {
-        return alertDialog(context, 'Password Mismatch');
+        return alertDialog(context, 'global/password-mismatch'.i18n());
       } else {
         _formKey.currentState!.save();
         
@@ -75,9 +76,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             newPassword
           );
           if (result == -1 && mounted) {
-            return alertDialog(context, 'User Not Found');
+            return alertDialog(context, 'profile_screen/user-not-found'.i18n());
           } else if (result == -2 && mounted) {
-            return alertDialog(context, 'Incorrect Current Password');
+            return alertDialog(context, 'profile_screen/incorrect-current-password'.i18n());
           } else {
             if(mounted) {
               // Firebase Update Password
@@ -86,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 oldPassword: currentPassword,
                 newPassword: newPassword
               );
-              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Update Password'));
+              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('profile_screen/update-password'.i18n()));
               Navigator.pop(context);
             }
           }
@@ -113,10 +114,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               context, MaterialPageRoute
               (builder: (_) => const LoginScreen())
             );
-            ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
+            ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('profile_screen/delete-account'.i18n()));
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Delete Account'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('profile_screen/delete-account'.i18n()));
         }
       }
     }
@@ -260,9 +261,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 )
                               );
                             }, 
-                            child: const Text(
-                              'Edit Profile',
-                              style: TextStyle(
+                            child: Text(
+                              'global/edit-profile'.i18n(),
+                              style: const TextStyle(
                                 color: primaryButton,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -276,9 +277,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text(
-                  'About',
-                  style: TextStyle(
+                Text(
+                  'profile_screen/about'.i18n(),
+                  style: const TextStyle(
                     fontSize: 20, 
                     fontWeight: FontWeight.w600
                   ),
@@ -293,7 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 10),
                 ProfileButton(
                   icon: Icons.lock_outlined,
-                  title: 'Change Password',
+                  title: 'profile_screen/change-password'.i18n(),
                   onPressed: () {
                     resetFormFields();
                     showChangePasswordDialog(context);
@@ -302,9 +303,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 15),
                 ProfileButton(
                   icon: Icons.logout_outlined,
-                  title: 'Log Out',
+                  title: 'profile_screen/logout'.i18n(),
                   onPressed: () {
-                    showConfirmationDialog(context, 'Log Out', () async{
+                    showConfirmationDialog(context, 'profile_screen/logout'.i18n(), () async{
                       await clearSharedPreferences();
                       if(mounted) {
                         Navigator.push(context,MaterialPageRoute(builder: (_) => const LoginScreen()));
@@ -315,9 +316,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 15),
                 ProfileButton(
                   icon: Icons.delete_outlined,
-                  title: 'Delete Account',
+                  title: 'profile_screen/delete-account'.i18n(),
                   onPressed: () async {
-                    showConfirmationDialog(context, 'Delete Account', deleteAccountWrapper);
+                    showConfirmationDialog(context, 'profile_screen/delete-account'.i18n(), deleteAccountWrapper);
                   },
                 ),
               ],
@@ -339,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return true;
           },
           child: AlertDialog(
-            title: const Text('Change Password'),
+            title: Text('profile_screen/change-password'.i18n()),
             content: Form(
               key: _formKey,
               child: Column(
@@ -347,15 +348,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   PasswordFormField(
                     controller: currentPasswordController,
-                    labelText: 'Current Password',
+                    labelText: 'profile_screen/current-password'.i18n(),
                   ),
                   PasswordFormField(
                     controller: newPasswordController,
-                    labelText: 'New Password',
+                    labelText: 'profile_screen/new-password'.i18n(),
                   ),
                   PasswordFormField(
                     controller: confirmPasswordController,
-                    labelText: 'Confirm New Password',
+                    labelText: 'profile_screen/confirm-new-password'.i18n(),
                   ),
                 ],
               ),
@@ -365,13 +366,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Cancel'),
+                child: Text('global/cancel'.i18n()),
               ),
               ElevatedButton(
                 onPressed: () {
                   changePassword();
                 },
-                child: const Text('Change Password'),
+                child: Text('profile_screen/change-password'.i18n()),
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/controllers/app_permission_handler.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
@@ -73,9 +74,9 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: const Text(
-          'Profile Photo',
-          style: TextStyle(
+        title: Text(
+          'profile_picture_screen/title'.i18n(),
+          style: const TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w800,
           ),
@@ -143,11 +144,11 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
                   Navigator.pushReplacement(context, NoAnimationPageRoute(
                     builder: (context) => const ScreenLayout(page: 3),
                   ));
-                  ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Update Profile Picture'));
+                  ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('profile_picture_screen/update-profile-picture'.i18n()));
                 }, 
-                child: const Text(
-                  'UPDATE',
-                  style: TextStyle(
+                child: Text(
+                  'global/update'.i18n(),
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900
                   ),
@@ -164,9 +165,9 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'Choose an option',
-            style: TextStyle(
+          title: Text(
+            'global/title-dialog'.i18n(),
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold
             ),
@@ -182,14 +183,14 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, color: whiteText),
-                    SizedBox(width: 8),
+                    const Icon(Icons.image, color: whiteText),
+                    const SizedBox(width: 8),
                     Text(
-                      'Choose existing photo', 
-                      style: TextStyle(
+                      'global/choose-existing-photo'.i18n(), 
+                      style: const TextStyle(
                         color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
@@ -207,14 +208,14 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: green,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt, color: whiteText),
-                    SizedBox(width: 8),
+                    const Icon(Icons.camera_alt, color: whiteText),
+                    const SizedBox(width: 8),
                     Text(
-                      'Take photo', 
-                      style: TextStyle(
+                      'global/take-photo'.i18n(), 
+                      style: const TextStyle(
                         color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16

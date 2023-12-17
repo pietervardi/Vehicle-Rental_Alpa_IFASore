@@ -14,7 +14,7 @@ class ProfileButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ProfileButtonState createState() => _ProfileButtonState();
+  State<ProfileButton> createState() => _ProfileButtonState();
 }
 
 class _ProfileButtonState extends State<ProfileButton> {

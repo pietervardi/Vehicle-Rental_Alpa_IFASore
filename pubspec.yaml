@@ -48,10 +48,14 @@ dependencies:
   firebase_auth: ^4.14.1
   cloud_firestore: ^4.13.3
   flutter_rating_bar: ^4.0.1
-  get_time_ago: ^1.2.5
   firebase_storage: ^11.5.3
   image_picker: ^1.0.4
   permission_handler: ^11.0.1
+  flutter_localizations:
+    sdk: flutter
+    version: ^0.0.0
+  localization: 2.1.0
+  timeago: ^3.6.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +84,7 @@ flutter:
     - assets/car/
     - assets/illustration/
     - assets/profile/
+    - lib/i18n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

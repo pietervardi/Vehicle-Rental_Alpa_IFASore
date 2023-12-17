@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/message.dart';
 
@@ -15,7 +16,7 @@ void showCustomModalBottomSheet(BuildContext context, bool isDarkMode, String cu
               color: isDarkMode ? whiteText : black,
             ),
             title: Text(
-              'Not interested in this Review',
+              'bottom_sheet/title'.i18n(),
               style: TextStyle(
                 color: isDarkMode ? whiteText : black,
                 fontSize: 18
@@ -32,7 +33,7 @@ void showCustomModalBottomSheet(BuildContext context, bool isDarkMode, String cu
               color: isDarkMode ? whiteText : black,
             ),
             title: Text(
-              'Report Review',
+              'bottom_sheet/report-review'.i18n(),
               style: TextStyle(
                 color: isDarkMode ? whiteText : black,
                 fontSize: 18
@@ -52,7 +53,7 @@ void showCustomModalBottomSheet(BuildContext context, bool isDarkMode, String cu
                     color: isDarkMode ? whiteText : black,
                   ),
                   title: Text(
-                    'Delete Review',
+                    'bottom_sheet/delete-review'.i18n(),
                     style: TextStyle(
                       color: isDarkMode ? whiteText : black,
                       fontSize: 18
@@ -60,7 +61,7 @@ void showCustomModalBottomSheet(BuildContext context, bool isDarkMode, String cu
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    showConfirmationDialog(context, 'Delete Review', () => onDeleteReview(reviewId));
+                    showConfirmationDialog(context, 'bottom_sheet/delete-review'.i18n(), () => onDeleteReview(reviewId));
                   },
                 ),
               ],

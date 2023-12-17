@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
 import 'package:vehicle_rental/utils/api_url.dart';
@@ -43,9 +44,9 @@ class BookedCard extends StatelessWidget {
           Navigator.of(context).pushReplacement(NoAnimationPageRoute(
             builder: (context) => const ScreenLayout(page: 0),
           ));
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('Unbook Car'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarDanger('global/unbook-car'.i18n()));
         } else {
-          throw Exception('Failed to update');
+          throw Exception('global/failed-update'.i18n());
         }
       } catch (e) {
         rethrow;
@@ -110,9 +111,9 @@ class BookedCard extends StatelessWidget {
                     onPressed: () {
                       updateBook(id);
                     },
-                    child: const Text(
-                      'UNBOOK',
-                      style: TextStyle(
+                    child: Text(
+                      'global/unbook-button'.i18n(),
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 17
                       ),

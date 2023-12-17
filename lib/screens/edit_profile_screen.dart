@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/components/form_field.dart';
@@ -59,7 +60,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       int result = await db.updateUser(userModel);
       if (mounted) {
         if(result == -1) {
-          alertDialog(context, 'Email or Username already exists');
+          alertDialog(context, 'global/email-password-exist'.i18n());
         } else {
           // Update User Firestore
           updateUserFirestore(name, username, email, about);
@@ -69,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ));
           // Success Message
           ScaffoldMessenger.of(context).showSnackBar(
-            buildSnackBarSuccess('Update Profile')
+            buildSnackBarSuccess('edit_profile_screen/update-profile'.i18n())
           );
         }
       }
@@ -107,7 +108,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Edit Profile',
+          'global/edit-profile'.i18n(),
           style: TextStyle(
             fontSize: 30, 
             fontWeight: FontWeight.bold,
@@ -145,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   controller: nameCtrl,
                   icon: Icons.person,
                   inputType: TextInputType.name,
-                  hintName: 'Name'
+                  hintName: 'global/name'.i18n()
                 ),
                 const SizedBox(
                   height: 20,
@@ -154,7 +155,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   controller: usernameCtrl,
                   icon: Icons.person_outline,
                   inputType: TextInputType.name,
-                  hintName: 'Username'
+                  hintName: 'global/username'.i18n()
                 ),
                 const SizedBox(
                   height: 20,
@@ -163,7 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   controller: emailCtrl,
                   icon: Icons.email_outlined,
                   inputType: TextInputType.emailAddress,
-                  hintName: 'Email'
+                  hintName: 'global/email'.i18n()
                 ),
                 const SizedBox(
                   height: 20,
@@ -173,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   icon: Icons.info_outlined,
                   inputType: TextInputType.emailAddress,
                   line: 6,
-                  hintName: 'About'
+                  hintName: 'edit_profile_screen/about'.i18n()
                 ),
                 const SizedBox(
                   height: 30,
@@ -190,9 +191,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     )
                   ),
                   onPressed: updateProfile,
-                  child: const Text(
-                    'UPDATE',
-                    style: TextStyle(
+                  child: Text(
+                    'global/update'.i18n(),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700
                     ),

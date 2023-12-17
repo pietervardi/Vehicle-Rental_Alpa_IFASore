@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 import 'package:vehicle_rental/utils/helper.dart';
 
@@ -29,10 +30,10 @@ class CustomTextFormField extends StatelessWidget {
         keyboardType: inputType,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter $hintName';
+            return "${'form_field/please-enter'.i18n()} $hintName";
           }
           if (hintName == "Email" && !validateEmail(value)) {
-            return 'Please Enter Valid Email';
+            return 'form_field/valid-email'.i18n();
           }
           return null;
         },
@@ -46,7 +47,7 @@ class CustomTextFormField extends StatelessWidget {
             borderSide: BorderSide(color: Colors.blue),
           ),
           prefixIcon: Icon(icon),
-          hintText: 'Enter $hintName',
+          hintText: "${"form_field/enter".i18n()} $hintName",
           labelText: hintName,
           fillColor: inputField,
           filled: true,
@@ -76,7 +77,7 @@ class PasswordFormField extends StatelessWidget {
       obscureText: isObscureText,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter $labelText';
+          return "${'form_field/please-enter'.i18n()} $labelText";
         }
         return null;
       },
@@ -112,10 +113,10 @@ class ProfileFormField extends StatelessWidget {
         maxLines: line,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter $hintName';
+            return "${'form_field/please-enter'.i18n()} $hintName";
           }
           if (hintName == "Email" && !validateEmail(value)) {
-            return 'Please Enter Valid Email';
+            return 'form_field/valid-email'.i18n();
           }
           return null;
         },
@@ -133,7 +134,7 @@ class ProfileFormField extends StatelessWidget {
                 child: Icon(icon),
               )
             : Icon(icon),
-          hintText: 'Enter $hintName',
+          hintText: "${'form_field/enter'.i18n()} $hintName",
           labelText: hintName,
           filled: true,
         ),

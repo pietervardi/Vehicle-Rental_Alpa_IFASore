@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/controllers/app_permission_handler.dart';
 import 'package:vehicle_rental/controllers/auth_controller.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
@@ -54,13 +54,6 @@ class _ReviewFormState extends State<ReviewForm> {
     } else {
       return '';
     }
-  }
-
-  // get Current Email stored in SharedPreferences
-  Future<String?> getEmailFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email = prefs.getString('email');
-    return email;
   }
 
   // Create Review Firestore
@@ -125,7 +118,7 @@ class _ReviewFormState extends State<ReviewForm> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            'Write a Review',
+            'review_form/title'.i18n(),
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w800,
@@ -173,9 +166,9 @@ class _ReviewFormState extends State<ReviewForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          " What's Your Rate?",
-                          style: TextStyle(
+                        Text(
+                          'review_form/subtitle'.i18n(),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold
                           ),
@@ -213,11 +206,11 @@ class _ReviewFormState extends State<ReviewForm> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    'Add Photo',
-                    style: TextStyle(
+                    'review_form/add-photo'.i18n(),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold
                     ),
@@ -240,17 +233,17 @@ class _ReviewFormState extends State<ReviewForm> {
                           _image!,
                         )
                       : 
-                        const Column(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.cloud_upload_rounded,
                               size: 40,
                             ),
-                            SizedBox(height: 5,),
+                            const SizedBox(height: 5,),
                             Text(
-                              'Click here to upload',
-                              style: TextStyle(
+                              'review_form/click-here-to-upload'.i18n(),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold
                               ),
@@ -261,11 +254,11 @@ class _ReviewFormState extends State<ReviewForm> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
-                    'Your Comment',
-                    style: TextStyle(
+                    'review_form/your-comment'.i18n(),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold
                     ),
@@ -285,7 +278,7 @@ class _ReviewFormState extends State<ReviewForm> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      hintText: 'Type your comment here...',
+                      hintText: 'review_form/type-your-comment-here'.i18n(),
                     ),
                   ),
                 ),
@@ -299,17 +292,18 @@ class _ReviewFormState extends State<ReviewForm> {
                       Navigator.pushReplacement(context, NoAnimationPageRoute(
                         builder: (context) => const ScreenLayout(page: 2),
                       ));
-                      ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Create Review'));
+                      ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('review_form/create-review'.i18n()));
                     }, 
-                    child: const Text(
-                      'Submit Review',
-                      style: TextStyle(
+                    child: Text(
+                      'review_form/button'.i18n(),
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900
                       ),
                     )
                   ),
-                )
+                ),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -323,9 +317,9 @@ class _ReviewFormState extends State<ReviewForm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'Choose an option',
-            style: TextStyle(
+          title: Text(
+            'global/title-dialog'.i18n(),
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold
             ),
@@ -341,14 +335,14 @@ class _ReviewFormState extends State<ReviewForm> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: blue,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.image, color: whiteText),
-                    SizedBox(width: 8),
+                    const Icon(Icons.image, color: whiteText),
+                    const SizedBox(width: 8),
                     Text(
-                      'Choose existing photo',
-                      style: TextStyle(
+                      'global/choose-existing-photo'.i18n(),
+                      style: const TextStyle(
                         color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16
@@ -366,14 +360,14 @@ class _ReviewFormState extends State<ReviewForm> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: green,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt, color: whiteText), // Icon
-                    SizedBox(width: 8),
+                    const Icon(Icons.camera_alt, color: whiteText), // Icon
+                    const SizedBox(width: 8),
                     Text(
-                      'Take photo', 
-                      style: TextStyle(
+                      'global/take-photo'.i18n(), 
+                      style: const TextStyle(
                         color: whiteText,
                         fontWeight: FontWeight.bold,
                         fontSize: 16

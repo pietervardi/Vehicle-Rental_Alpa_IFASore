@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
@@ -70,12 +71,12 @@ class _LoginScreenState extends State<LoginScreen> {
           // navigate to ScreenLayout
           Navigator.push(context, MaterialPageRoute(builder: (_) => const ScreenLayout()));
           // Success Message
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Login'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('login_screen/login'.i18n()));
         }
       } else {
         // if doesnt match
         if (mounted) {
-          alertDialog(context, 'Email or Password is Incorrect');
+          alertDialog(context, 'login_screen/email-password-incorrect'.i18n());
         }
       }
 
@@ -105,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 274,
                   ),
                   Text(
-                    'LOG IN',
+                    'login_screen/title'.i18n(),
                     style: GoogleFonts.roboto(
                       fontSize: 40, 
                       color: signText, 
@@ -124,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: emailCtrl,
                             icon: Icons.email_outlined,
                             inputType: TextInputType.emailAddress,
-                            hintName: 'Email'
+                            hintName: 'global/email'.i18n()
                           ),
                           const SizedBox(
                             height: 10,
@@ -133,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: passwordCtrl,
                             icon: Icons.lock_outlined,
                             isObscureText: true,
-                            hintName: 'Password'
+                            hintName: 'global/password'.i18n()
                           ),
                         ],
                       ),
@@ -154,9 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             vertical: 20)
                           ),
                         onPressed: login,
-                        child: const Text(
-                          'LOGIN',
-                          style: TextStyle(fontSize: 20),
+                        child: Text(
+                          'login_screen/button'.i18n(),
+                          style: const TextStyle(fontSize: 20),
                         )
                       ),
                     ),
@@ -168,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account ?"),
+                      Text('login_screen/no-account'.i18n()),
                       TextButton(
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
@@ -176,9 +177,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         },
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(color: primaryButton),
+                        child: Text(
+                          'login_screen/signup'.i18n(),
+                          style: const TextStyle(color: primaryButton),
                         )
                       )
                     ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/utils/colors.dart';
 
 SnackBar buildSnackBarSuccess(String type) {
@@ -14,14 +15,14 @@ SnackBar buildSnackBarSuccess(String type) {
           size: 30,
         ),
       ),
-      title: const Text(
-        'Success',
-        style: TextStyle(
+      title: Text(
+        'message/success'.i18n(),
+        style: const TextStyle(
           fontWeight: FontWeight.w700
         ),
       ),
       subtitle: Text(
-        'Anda Berhasil $type',
+        "${'message/you-succeeded'.i18n()} $type",
         style: const TextStyle(
           fontWeight: FontWeight.w600
         ),
@@ -43,14 +44,14 @@ SnackBar buildSnackBarDanger(String type) {
           size: 30,
         ),
       ),
-      title: const Text(
-        'Success',
-        style: TextStyle(
+      title: Text(
+        'message/success'.i18n(),
+        style: const TextStyle(
           fontWeight: FontWeight.w700
         ),
       ),
       subtitle: Text(
-        'Anda Berhasil $type',
+        "${'message/you-succeeded'.i18n()} $type",
         style: const TextStyle(
           fontWeight: FontWeight.w600
         ),
@@ -64,14 +65,14 @@ void showConfirmationDialog(BuildContext context, String title, Function() onCon
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Confirm $title'),
-        content: Text('Are you sure you want to $title?'),
+        title: Text("${'message/confirm'.i18n()} $title"),
+        content: Text("${'message/are-you-sure'.i18n()} $title?"),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Cancel'),
+            child: Text('global/cancel'.i18n()),
           ),
           TextButton(
             onPressed: () {

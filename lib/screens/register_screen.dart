@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:vehicle_rental/components/form_field.dart';
@@ -61,9 +62,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       // check if password match & minimum length 6 characters
       if (passwd != cpasswd) {
-        alertDialog(context, 'Password Mismatch');
+        alertDialog(context, 'global/password-mismatch'.i18n());
       } else if (passwd.length < 6) {
-        alertDialog(context, 'Password must be at least 6 characters');
+        alertDialog(context, 'register_screen/password-length'.i18n());
       } else {
         _formKey.currentState!.save();
 
@@ -85,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // create user account
           int result = await db.signup(userModel);
           if (result == -1 && mounted) {
-            alertDialog(context, 'Email or Username already exists');
+            alertDialog(context, 'global/email-password-exist'.i18n());
           } else {
             // if email and password match -> store the email in SharedPreferences
             SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -96,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // navigate to ScreenLayout
               Navigator.push(context, MaterialPageRoute(builder: (_) => const ScreenLayout()));
               // Success Message
-              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Register'));
+              ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('register_screen/register'.i18n()));
             }
           }
         }
@@ -147,7 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 274,
                 ),
                 Text(
-                  'REGISTER',
+                  'register_screen/title'.i18n(),
                   style: GoogleFonts.roboto(
                     fontSize: 40,
                     color: signText,
@@ -166,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: nameCtrl,
                           icon: Icons.person,
                           inputType: TextInputType.name,
-                          hintName: 'Name'
+                          hintName: 'global/name'.i18n()
                         ),
                         const SizedBox(
                           height: 10,
@@ -175,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: usernameCtrl,
                           icon: Icons.person_outline,
                           inputType: TextInputType.name,
-                          hintName: 'Username'
+                          hintName: 'global/username'.i18n()
                         ),
                         const SizedBox(
                           height: 10,
@@ -184,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: emailCtrl,
                           icon: Icons.email_outlined,
                           inputType: TextInputType.emailAddress,
-                          hintName: 'Email'
+                          hintName: 'global/email'.i18n()
                         ),
                         const SizedBox(
                           height: 10,
@@ -193,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: passwordCtrl,
                           icon: Icons.lock_outlined,
                           isObscureText: true,
-                          hintName: 'Password'
+                          hintName: 'global/password'.i18n()
                         ),
                         const SizedBox(
                           height: 10,
@@ -202,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: confirmPasswordCtrl,
                           icon: Icons.lock_outlined,
                           isObscureText: true,
-                          hintName: 'Confirm Password'
+                          hintName: 'global/confirm-password'.i18n()
                         ),
                       ],
                     ),
@@ -224,9 +225,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         )
                       ),
                       onPressed: register,
-                      child: const Text(
-                        'REGISTER',
-                        style: TextStyle(fontSize: 20),
+                      child: Text(
+                        'register_screen/title'.i18n(),
+                        style: const TextStyle(fontSize: 20),
                       )),
                   ),
                 ),
@@ -237,14 +238,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Already have an account ?"),
+                    Text('register_screen/have-account'.i18n()),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text(
-                        'Sign in',
-                        style: TextStyle(color: primaryButton),
+                      child: Text(
+                        'register_screen/signin'.i18n(),
+                        style: const TextStyle(color: primaryButton),
                       )
                     )
                   ],

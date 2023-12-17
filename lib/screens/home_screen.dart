@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/models/car_model.dart';
 import 'package:vehicle_rental/components/car_card.dart';
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final List<Car> apiCars = await fetchCarData();
       cars = apiCars;
 
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 500));
 
       if (totalLoadedCount < cars.length) {
         int endIndex = totalLoadedCount + initialLoadCount;
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final unbookedCars = cars.where((car) => !car.book).toList();
       return unbookedCars;
     } else {
-      throw Exception('Failed to load car data');
+      throw Exception('global/failed-load'.i18n());
     }
   }
 
@@ -100,18 +101,21 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   Text(
-                    ' Choose ',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    'home_screen/choose'.i18n(),
+                    style: const TextStyle(
+                      fontSize: 28, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                   Text(
-                    'a Car',
-                    style: TextStyle(
+                    'home_screen/car'.i18n(),
+                    style: const TextStyle(
                       fontSize: 28,
                     ),
                   )
@@ -138,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           ElevatedButton(
                             onPressed: _loadInitialCars,
-                            child: const Text('Retry'),
+                            child: Text('global/retry'.i18n()),
                           ),
                         ],
                       ),

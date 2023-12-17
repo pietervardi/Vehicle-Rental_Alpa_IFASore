@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_time_ago/get_time_ago.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/models/user_firebase_model.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
@@ -19,9 +20,9 @@ class ReviewDetail extends StatefulWidget {
   const ReviewDetail({
     Key? key,
     required this.id,
-    this.name = 'User Deleted',
+    required this.name,
     required this.text,
-    this.profilePicture = '',
+    required this.profilePicture,
     required this.imageUrl,
     required this.createdAt,
   }) : super(key: key);
@@ -60,8 +61,8 @@ class _ReviewDetailState extends State<ReviewDetail> {
     } on FirebaseException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error posting comment'),
+          SnackBar(
+            content: Text('review_detail/error-posting'.i18n()),
           ),
         );
       }     
@@ -99,7 +100,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(
-          'Reply',
+          'review_detail/title'.i18n(),
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w800,
@@ -143,7 +144,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
                   ),
                 ),
                 Text(
-                  GetTimeAgo.parse(DateTime.parse(createdAt.toDate().toString())),
+                  timeago.format(createdAt.toDate()),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w300
@@ -206,13 +207,11 @@ class _ReviewDetailState extends State<ReviewDetail> {
             stream: commentReference,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator()
-                );
+                return Container();
               }
               if (snapshot.hasError) {
-                const Center(
-                  child: Text('There was an error fetching comments'),
+                Center(
+                  child: Text('review_detail/error-fetching'.i18n()),
                 );
               }
 
@@ -227,7 +226,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
                       vertical: 12,
                     ),
                     child: Text(
-                      'Answer (${comments.length})',
+                      "${'review_detail/answer'.i18n()} (${comments.length})",
                       style: TextStyle(
                         color: isDarkMode ? whiteText : black,
                         fontWeight: FontWeight.w800,
@@ -260,7 +259,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
                                     title: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 10),
                                       child: Text(
-                                        '${user.name}  •  ${GetTimeAgo.parse(DateTime.parse(time.toString()))}',
+                                        '${user.name}  •  ${timeago.format(time)}',
                                         style: const TextStyle(
                                           fontSize: 14
                                         ),
@@ -292,6 +291,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
               );
             },
           ),
+          const SizedBox(height: 60,)
         ],
       ),
       bottomSheet: Padding(
@@ -307,7 +307,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
           ),
           validator: (text) {
             if (text == null || text.isEmpty) {
-              return 'Comment is Empty!';
+              return 'review_detail/comment-empty'.i18n();
             }
             return null;
           },
@@ -327,9 +327,9 @@ class _ReviewDetailState extends State<ReviewDetail> {
                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text(
-                          'Comment is Empty!'
+                          'review_detail/comment-empty'.i18n()
                         ),
                       ),
                     );
@@ -338,7 +338,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
               icon: const Icon(Icons.send_rounded),
             ),
             contentPadding: const EdgeInsets.all(12),
-            hintText: "Write your comment...",
+            hintText: 'review_detail/write-comment'.i18n(),
             border: const UnderlineInputBorder(),
           ),
         ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/responsive/screen_layout.dart';
 import 'package:vehicle_rental/utils/animation.dart';
@@ -40,9 +41,9 @@ class CarDetailScreen extends StatelessWidget {
           Navigator.of(context).pushReplacement(NoAnimationPageRoute(
             builder: (context) => const ScreenLayout(page: 1),
           ));
-          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('Book Car'));
+          ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('global/book-car'.i18n()));
         } else {
-          throw Exception('Failed to update');
+          throw Exception('global/failed-update'.i18n());
         }
       } catch (e) {
         rethrow;
@@ -91,11 +92,11 @@ class CarDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             Image.asset(car.image),
-            const Padding(
-              padding: EdgeInsets.only(top: 20),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
               child: Text(
-                'SPECIFICATIONS',
-                style: TextStyle(
+                'detail_screen/specifications'.i18n(),
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: gray
@@ -110,11 +111,11 @@ class CarDetailScreen extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 children: [
-                  buildSpecificationCar(Icons.color_lens_outlined, 'Color', car.color),
-                  buildSpecificationCar(Icons.directions_car_outlined, 'Gearbox', car.gearbox),
-                  buildSpecificationCar(Icons.people_outlined, 'Seat', '( 1 - ${car.seat} )'),
-                  buildSpecificationCar(Icons.local_gas_station_outlined, 'Fuel', car.fuel),
-                  buildSpecificationCar(Icons.speed_outlined, 'Power', '${car.power} hp'),
+                  buildSpecificationCar(Icons.color_lens_outlined, 'detail_screen/color'.i18n(), car.color),
+                  buildSpecificationCar(Icons.directions_car_outlined, 'detail_screen/gearbox'.i18n(), car.gearbox),
+                  buildSpecificationCar(Icons.people_outlined, 'detail_screen/seat'.i18n(), '( 1 - ${car.seat} )'),
+                  buildSpecificationCar(Icons.local_gas_station_outlined, 'detail_screen/fuel'.i18n(), car.fuel),
+                  buildSpecificationCar(Icons.speed_outlined, 'detail_screen/power'.i18n(), '${car.power} hp'),
                 ],
               ),
             ),
@@ -128,9 +129,9 @@ class CarDetailScreen extends StatelessWidget {
                 onPressed: () {
                   updateBook(car.id);
                 },
-                child: const Text(
-                  'BOOK',
-                  style: TextStyle(
+                child: Text(
+                  'global/book-button'.i18n(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 17
                   ),

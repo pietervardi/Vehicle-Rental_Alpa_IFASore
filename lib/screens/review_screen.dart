@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:get_time_ago/get_time_ago.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 import 'package:vehicle_rental/controllers/storage_controller.dart';
 import 'package:vehicle_rental/models/review_model.dart';
@@ -24,9 +25,10 @@ class ReviewScreen extends StatefulWidget {
 class _ReviewScreenState extends State<ReviewScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final StorageController _store = StorageController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Read Collection Review
-  Stream<List<Review>> readReviews() => FirebaseFirestore.instance
+  Stream<List<Review>> readReviews() => _firestore
     .collection('reviews')
     .orderBy('createdAt', descending: true)
     .snapshots()
@@ -35,15 +37,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
     );
 
   // Get Single User by ID
-  Stream<UserFirebase?> readUser(String id) async* {
-    final docUser = FirebaseFirestore.instance.collection('users').doc(id);
+  Future<UserFirebase?> readUser(String id) async {
+    final docUser = _firestore.collection('users').doc(id);
 
-    yield* docUser.snapshots().map((snapshot) {
+    try {
+      final snapshot = await docUser.get();
       if (snapshot.exists) {
         return UserFirebase.fromJson(snapshot.data()!);
       }
       return null;
-    });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // Calculate Rating
@@ -72,8 +77,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     } on FirebaseException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error liking post'),
+          SnackBar(
+            content: Text('review_screen/error-like'.i18n()),
           ),
         );
       }
@@ -94,8 +99,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     } on FirebaseException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error disliking post'),
+          SnackBar(
+            content: Text('review_screen/error-dislike'.i18n()),
           ),
         );
       }
@@ -116,32 +121,32 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       body: StreamBuilder<List<Review>>(
         stream: readReviews(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, snapshot1) {
+          if (snapshot1.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator()
             );
           }
-          if (snapshot.hasError) {
+          if (snapshot1.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text('Error: ${snapshot1.error}'),
             );
           }
-          if (snapshot.hasData) {
-            final reviews = snapshot.data!;
+          if (snapshot1.hasData) {
+            final reviews = snapshot1.data!;
             double averageRating = calculateAverageRating(reviews);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(
+                Padding(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 10
                   ),
                   child: Text(
-                    'App Review',
-                    style: TextStyle(
+                    'review_screen/title'.i18n(),
+                    style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 25
                     ),
@@ -179,7 +184,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       ),
                       const SizedBox(width: 20,),
                       Text(
-                        'from ${snapshot.data!.length} people',
+                        "${'review_screen/from'.i18n()} ${snapshot1.data!.length} ${'review_screen/people'.i18n()}",
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400
@@ -219,37 +224,33 @@ class _ReviewScreenState extends State<ReviewScreen> {
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
       onTap: () async {
-        UserFirebase? user;
-        await for (var snapshot in readUser(review.userId)) {
-          if (snapshot != null) {
-            user = snapshot;
-            break;
-          }
+        UserFirebase? user = await readUser(review.userId);
+        if (user != null && mounted) {
+          Navigator.push(
+            context,
+            NoAnimationPageRoute(
+              builder: (context) => ReviewDetail(
+                id: review.id,
+                name: user.name,
+                text: review.text,
+                profilePicture: user.imageUrl,
+                imageUrl: review.imageUrl,
+                createdAt: review.createdAt,
+              ),
+            ),
+          );
         }
-        Navigator.push(
-          context,
-          NoAnimationPageRoute(
-            builder: ((context) => ReviewDetail(
-              id: review.id,
-              name: user!.name,
-              text: review.text,
-              profilePicture: user.imageUrl,
-              imageUrl: review.imageUrl,
-              createdAt: review.createdAt,
-            )),
-          ),
-        );
       },
       child: Card(
         margin: const EdgeInsets.only(bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StreamBuilder<UserFirebase?>(
-              stream: readUser(review.userId),
-              builder: (context, snapshot) {
-                if(snapshot.hasData) {
-                  final user = snapshot.data;
+            FutureBuilder<UserFirebase?>(
+              future: readUser(review.userId),
+              builder: (context, snapshot2) {
+                if(snapshot2.hasData) {
+                  final user = snapshot2.data;
 
                   return ListTile(
                     leading: CircleAvatar(
@@ -258,13 +259,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         : const AssetImage('assets/profile/profile.png'),
                     ),
                     title: Text(
-                      user.name,
+                      user.name.isEmpty
+                        ? 'review_screen/user-deleted'.i18n()
+                        : user.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold
                       ),
                     ),
                     subtitle: Text(
-                      '${review.comments.length.toString()} reply  •  ${review.likes.length.toString()} helped',
+                      "${review.comments.length.toString()} ${'review_screen/reply'.i18n()}  •  ${review.likes.length.toString()} ${'review_screen/helped'.i18n()}",
                       style: const TextStyle(
                         fontSize: 13
                       ),
@@ -281,32 +284,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ),
                   );
                 }
-                return ListTile(
-                  leading: const CircleAvatar(
-                    backgroundImage: AssetImage('assets/profile/profile.png'),
+                return const ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.transparent,
                   ),
-                  title: const Text(
-                    'User Deleted',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  subtitle: Text(
-                    '${review.comments.length.toString()} reply  •  ${review.likes.length.toString()} helped',
-                    style: const TextStyle(
-                      fontSize: 13
-                    ),
-                  ),
-                  trailing: GestureDetector(
-                    onTap: () {
-                      showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
-                        deleteReview(reviewId)
-                      );
-                    },
-                    child: const Icon(
-                      Icons.more_vert_outlined
-                    )
-                  ),
+                  title: Text(''),
+                  subtitle: Text(''),
+                  trailing: Icon(
+                    Icons.more_vert_outlined
+                  )
                 );
               }
             ),
@@ -326,7 +312,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ),
                   const SizedBox(width: 5,),
                   Text(
-                    GetTimeAgo.parse(DateTime.parse(review.createdAt.toDate().toString())),
+                    timeago.format(review.createdAt.toDate()),
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w300
@@ -411,26 +397,22 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   const SizedBox(width: 15,),
                   GestureDetector(
                     onTap: () async {
-                      UserFirebase? user;
-                      await for (var snapshot in readUser(review.userId)) {
-                        if (snapshot != null) {
-                          user = snapshot;
-                          break;
-                        }
+                      UserFirebase? user = await readUser(review.userId);
+                      if (user != null && mounted) {
+                        Navigator.push(
+                          context,
+                          NoAnimationPageRoute(
+                            builder: (context) => ReviewDetail(
+                              id: review.id,
+                              name: user.name,
+                              text: review.text,
+                              profilePicture: user.imageUrl,
+                              imageUrl: review.imageUrl,
+                              createdAt: review.createdAt,
+                            ),
+                          ),
+                        );
                       }
-                      Navigator.push(
-                        context,
-                        NoAnimationPageRoute(
-                          builder: ((context) => ReviewDetail(
-                            id: review.id,
-                            name: user!.name,
-                            text: review.text,
-                            profilePicture: user.imageUrl,
-                            imageUrl: review.imageUrl,
-                            createdAt: review.createdAt,
-                          )),
-                        ),
-                      );
                     },
                     child: const Icon(
                       Icons.chat_bubble_outline,

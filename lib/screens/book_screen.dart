@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:localization/localization.dart';
 import 'package:vehicle_rental/components/booked_card.dart';
 import 'package:vehicle_rental/components/skeleton_loader.dart';
 import 'package:vehicle_rental/models/car_model.dart';
@@ -20,7 +21,7 @@ class _BookScreenState extends State<BookScreen> {
   // Get Data from API
   Future<List<Car>> fetchCarData() async {
     final response = await http.get(Uri.parse(ApiUrl.getVehiclesUrl()));
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -28,7 +29,7 @@ class _BookScreenState extends State<BookScreen> {
       final bookedCars = cars.where((car) => car.book).toList();
       return bookedCars;
     } else {
-      throw Exception('Failed to load car data');
+      throw Exception('global/failed-load'.i18n());
     }
   }
 
@@ -41,18 +42,21 @@ class _BookScreenState extends State<BookScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   Text(
-                    ' Booked ',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    'book_screen/car'.i18n(),
+                    style: const TextStyle(
+                      fontSize: 28, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                   Text(
-                    'Car',
-                    style: TextStyle(
+                    'book_screen/booked'.i18n(),
+                    style: const TextStyle(
                       fontSize: 28,
                     ),
                   )
@@ -78,7 +82,7 @@ class _BookScreenState extends State<BookScreen> {
                           ),
                           ElevatedButton(
                             onPressed: fetchCarData,
-                            child: const Text('Retry'),
+                            child: Text('global/retry'.i18n()),
                           ),
                         ],
                       ),
@@ -89,10 +93,10 @@ class _BookScreenState extends State<BookScreen> {
                   if (displayedCars.isEmpty) {
                     return SizedBox(
                       height: MediaQuery.of(context).size.height/1.5,
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'No Cars Booked',
-                          style: TextStyle(
+                          'book_screen/no-car'.i18n(),
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold
                           ),

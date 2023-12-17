@@ -246,6 +246,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -272,14 +277,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  get_time_ago:
-    dependency: "direct main"
-    description:
-      name: get_time_ago
-      sha256: "114b4ac06c2a2b8dc9ba091f6c46d76587e0be6a29a5ba2e343f243403ee9b15"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.5"
   google_fonts:
     dependency: "direct main"
     description:
@@ -392,6 +389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  localization:
+    dependency: "direct main"
+    description:
+      name: localization
+      sha256: "01d892155364dc456e1141dd8003e43c98d457f2b51fe1b8984766bad2a3fd72"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   matcher:
     dependency: transitive
     description:
@@ -693,6 +698,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  timeago:
+    dependency: "direct main"
+    description:
+      name: timeago
+      sha256: c44b80cbc6b44627c00d76960f2af571f6f50e5dbedef4d9215d455e4335165b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.0"
   toast:
     dependency: "direct main"
     description:
