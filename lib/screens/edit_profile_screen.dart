@@ -107,27 +107,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(
-          'global/edit-profile'.i18n(),
-          style: TextStyle(
-            fontSize: 30, 
-            fontWeight: FontWeight.bold,
-            color: isDarkMode ? whiteText : black
+        title: Semantics(
+          label: 'semantics/edit_profile_screen/share'.i18n(),
+          child: Text(
+            'global/edit-profile'.i18n(),
+            style: TextStyle(
+              fontSize: 30, 
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? whiteText : black
+            ),
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         leading: Consumer<ThemeProvider>(
           builder: (context, provider, child) {
-            return IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_left_outlined,
-                color: isDarkMode ? whiteText : black,
-                size: 28,
+            return Semantics(
+              onTapHint: 'semantics/global/back-button'.i18n(),
+              child: Tooltip(
+                message: 'screen_layout/tooltip/back'.i18n(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_left_outlined,
+                    color: isDarkMode ? whiteText : black,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             );
           },
         ),
@@ -142,62 +151,77 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                ProfileFormField(
-                  controller: nameCtrl,
-                  icon: Icons.person,
-                  inputType: TextInputType.name,
-                  hintName: 'global/name'.i18n()
+                Semantics(
+                  label: 'semantics/global/name'.i18n(),
+                  child: ProfileFormField(
+                    controller: nameCtrl,
+                    icon: Icons.person,
+                    inputType: TextInputType.name,
+                    hintName: 'global/name'.i18n()
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                ProfileFormField(
-                  controller: usernameCtrl,
-                  icon: Icons.person_outline,
-                  inputType: TextInputType.name,
-                  hintName: 'global/username'.i18n()
+                Semantics(
+                  label: 'semantics/global/username'.i18n(),
+                  child: ProfileFormField(
+                    controller: usernameCtrl,
+                    icon: Icons.person_outline,
+                    inputType: TextInputType.name,
+                    hintName: 'global/username'.i18n()
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                ProfileFormField(
-                  controller: emailCtrl,
-                  icon: Icons.email_outlined,
-                  inputType: TextInputType.emailAddress,
-                  hintName: 'global/email'.i18n()
+                Semantics(
+                  label: 'semantics/global/email'.i18n(),
+                  child: ProfileFormField(
+                    controller: emailCtrl,
+                    icon: Icons.email_outlined,
+                    inputType: TextInputType.emailAddress,
+                    hintName: 'global/email'.i18n()
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                ProfileFormField(
-                  controller: aboutCtrl,
-                  icon: Icons.info_outlined,
-                  inputType: TextInputType.emailAddress,
-                  line: 6,
-                  hintName: 'edit_profile_screen/about'.i18n()
+                Semantics(
+                  label: 'semantics/edit_profile_screen/about'.i18n(),
+                  child: ProfileFormField(
+                    controller: aboutCtrl,
+                    icon: Icons.info_outlined,
+                    inputType: TextInputType.emailAddress,
+                    line: 6,
+                    hintName: 'edit_profile_screen/about'.i18n()
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
+                Semantics(
+                  onTapHint: 'semantics/edit_profile_screen/button'.i18n(),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      backgroundColor: primaryButton,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 60, 
+                        vertical: 20
+                      )
                     ),
-                    backgroundColor: primaryButton,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 60, 
-                      vertical: 20
+                    onPressed: updateProfile,
+                    child: Text(
+                      'global/update'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700
+                      ),
                     )
                   ),
-                  onPressed: updateProfile,
-                  child: Text(
-                    'global/update'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700
-                    ),
-                  )
                 ),
               ],
             ),

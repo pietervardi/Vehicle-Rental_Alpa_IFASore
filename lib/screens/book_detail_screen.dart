@@ -60,15 +60,21 @@ class BookDetailScreen extends StatelessWidget {
           builder: (context, provider, child) {
             final isDarkMode = provider.currentTheme == 'dark';
 
-            return IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_left_outlined,
-                color: isDarkMode ? Colors.white : Colors.black,
-                size: 28,
+            return Semantics(
+              onTapHint: 'semantics/global/back-button'.i18n(),
+              child: Tooltip(
+                message: 'screen_layout/tooltip/back'.i18n(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_left_outlined,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             );
           },
         ),
@@ -78,81 +84,111 @@ class BookDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              car.name,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+            Semantics(
+              label: 'semantics/global/car-name'.i18n(),
+              child: Text(
+                car.name,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            Text(
-              car.brand,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+            Semantics(
+              label: 'semantics/global/car-brand'.i18n(),
+              child: Text(
+                car.brand,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             const SizedBox(height: 15),
-            Image.asset(car.image),
+            Semantics(
+              onTapHint: 'semantics/global/car-image'.i18n(),
+              child: Image.asset(car.image)
+            ),
             const SizedBox(height: 20),
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'book_detail_screen/pickup-return'.i18n(),
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: gray,
+            Semantics(
+              label: 'semantics/book_detail_screen/pickup-return-information'.i18n(),
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        label: 'semantics/book_detail_screen/pickup-return-title'.i18n(),
+                        child: Text(
+                          'book_detail_screen/pickup-return'.i18n(),
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: gray,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'book_detail_screen/pickup'.i18n(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                      const SizedBox(height: 20),
+                      Semantics(
+                        label: 'semantics/book_detail_screen/pickup-title'.i18n(),
+                        child: Text(
+                          'book_detail_screen/pickup'.i18n(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(car.date ?? 'N/A'),
-                    const SizedBox(height: 20),
-                    Text(
-                      'book_detail_screen/return'.i18n(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                      Semantics(
+                        label: 'semantics/book_detail_screen/pickup-date'.i18n(),
+                        child: Text(car.date ?? 'N/A')
                       ),
-                    ),
-                    Text(returnDate),
-                  ],
+                      const SizedBox(height: 20),
+                      Semantics(
+                        label: 'semantics/book_detail_screen/return-title'.i18n(),
+                        child: Text(
+                          'book_detail_screen/return'.i18n(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Semantics(
+                        label: 'semantics/book_detail_screen/return-date'.i18n(),
+                        child: Text(returnDate)
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 30,),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: gray,
-                  padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                ),
-                onPressed: () {
-                  updateBook(car.id);
-                },
-                child: Text(
-                  'global/unbook-button'.i18n(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 17
+            Semantics(
+              onTapHint: 'semantics/global/unbook-button'.i18n(),
+              child: Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: gray,
+                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
                   ),
-                )
+                  onPressed: () {
+                    updateBook(car.id);
+                  },
+                  child: Text(
+                    'global/unbook-button'.i18n(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 17
+                    ),
+                  )
+                ),
               ),
             ),
           ],

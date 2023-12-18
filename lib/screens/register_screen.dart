@@ -142,17 +142,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(
                   height: 25,
                 ),
-                Image.asset(
-                  'assets/illustration/form.jpg',
-                  width: 251,
-                  height: 274,
+                Semantics(
+                  label: 'semantics/global/auth-image'.i18n(),
+                  child: Image.asset(
+                    'assets/illustration/form.jpg',
+                    width: 251,
+                    height: 274,
+                  ),
                 ),
-                Text(
-                  'register_screen/title'.i18n(),
-                  style: GoogleFonts.roboto(
-                    fontSize: 40,
-                    color: signText,
-                    fontWeight: FontWeight.bold
+                Semantics(
+                  label: 'semantics/register_screen/title'.i18n(),
+                  child: Text(
+                    'register_screen/title'.i18n(),
+                    style: GoogleFonts.roboto(
+                      fontSize: 40,
+                      color: signText,
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
                 Container(
@@ -163,72 +169,90 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomTextFormField(
-                          controller: nameCtrl,
-                          icon: Icons.person,
-                          inputType: TextInputType.name,
-                          hintName: 'global/name'.i18n()
+                        Semantics(
+                          label: 'semantics/global/name'.i18n(),
+                          child: CustomTextFormField(
+                            controller: nameCtrl,
+                            icon: Icons.person,
+                            inputType: TextInputType.name,
+                            hintName: 'global/name'.i18n()
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          controller: usernameCtrl,
-                          icon: Icons.person_outline,
-                          inputType: TextInputType.name,
-                          hintName: 'global/username'.i18n()
+                        Semantics(
+                          label: 'semantics/global/username'.i18n(),
+                          child: CustomTextFormField(
+                            controller: usernameCtrl,
+                            icon: Icons.person_outline,
+                            inputType: TextInputType.name,
+                            hintName: 'global/username'.i18n()
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          controller: emailCtrl,
-                          icon: Icons.email_outlined,
-                          inputType: TextInputType.emailAddress,
-                          hintName: 'global/email'.i18n()
+                        Semantics(
+                          label: 'semantics/global/email'.i18n(),
+                          child: CustomTextFormField(
+                            controller: emailCtrl,
+                            icon: Icons.email_outlined,
+                            inputType: TextInputType.emailAddress,
+                            hintName: 'global/email'.i18n()
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          controller: passwordCtrl,
-                          icon: Icons.lock_outlined,
-                          isObscureText: true,
-                          hintName: 'global/password'.i18n()
+                        Semantics(
+                          label: 'semantics/global/password'.i18n(),
+                          child: CustomTextFormField(
+                            controller: passwordCtrl,
+                            icon: Icons.lock_outlined,
+                            isObscureText: true,
+                            hintName: 'global/password'.i18n()
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          controller: confirmPasswordCtrl,
-                          icon: Icons.lock_outlined,
-                          isObscureText: true,
-                          hintName: 'global/confirm-password'.i18n()
+                        Semantics(
+                          label: 'semantics/register_screen/confirm-password'.i18n(),
+                          child: CustomTextFormField(
+                            controller: confirmPasswordCtrl,
+                            icon: Icons.lock_outlined,
+                            isObscureText: true,
+                            hintName: 'global/confirm-password'.i18n()
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Visibility(
-                    visible: !isLoading,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)
+                Semantics(
+                  onTapHint: 'semantics/register_screen/register-button'.i18n(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Visibility(
+                      visible: !isLoading,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)
+                          ),
+                          backgroundColor: primaryButton,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 110, 
+                            vertical: 20
+                          )
                         ),
-                        backgroundColor: primaryButton,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 110, 
-                          vertical: 20
-                        )
-                      ),
-                      onPressed: register,
-                      child: Text(
-                        'register_screen/title'.i18n(),
-                        style: const TextStyle(fontSize: 20),
-                      )),
+                        onPressed: register,
+                        child: Text(
+                          'register_screen/title'.i18n(),
+                          style: const TextStyle(fontSize: 20),
+                        )),
+                    ),
                   ),
                 ),
                 Visibility(
@@ -238,15 +262,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('register_screen/have-account'.i18n()),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'register_screen/signin'.i18n(),
-                        style: const TextStyle(color: primaryButton),
-                      )
+                    Semantics(
+                      label: 'semantics/register_screen/have-account'.i18n(),
+                      child: Text('register_screen/have-account'.i18n())
+                    ),
+                    Semantics(
+                      onTapHint: 'semantics/register_screen/have-account-button'.i18n(),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'register_screen/signin'.i18n(),
+                          style: const TextStyle(color: primaryButton),
+                        )
+                      ),
                     )
                   ],
                 ),

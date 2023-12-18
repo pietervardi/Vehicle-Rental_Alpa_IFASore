@@ -112,17 +112,23 @@ class _ReviewDetailState extends State<ReviewDetail> {
         elevation: 0,
         leading: Consumer<ThemeProvider>(
           builder: (context, provider, child) {
-            return IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_left_outlined,
-                color: isDarkMode ? whiteText : black,
-                size: 28,
+            return Semantics(
+              onTapHint: 'semantics/global/back-button'.i18n(),
+              child: Tooltip(
+                message: 'screen_layout/tooltip/back'.i18n(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_left_outlined,
+                    color: isDarkMode ? whiteText : black,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(context, NoAnimationPageRoute(
+                      builder: (context) => const ScreenLayout(page: 2),
+                    ));
+                  },
+                ),
               ),
-              onPressed: () {
-                Navigator.pushReplacement(context, NoAnimationPageRoute(
-                  builder: (context) => const ScreenLayout(page: 2),
-                ));
-              },
             );
           },
         ),
@@ -131,70 +137,85 @@ class _ReviewDetailState extends State<ReviewDetail> {
         physics: const BouncingScrollPhysics(),
         children: [
           ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(profilePicture)
+            leading: Semantics(
+              label: 'semantics/global/profile-picture'.i18n(),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(profilePicture)
+              ),
             ),
             title: Row(
               children: [
-                Text(
-                  '$name  •  ',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
+                Semantics(
+                  label: 'semantics/global/user-name'.i18n(),
+                  child: Text(
+                    '$name  •  ',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16
+                    ),
                   ),
                 ),
-                Text(
-                  timeago.format(createdAt.toDate()),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300
+                Semantics(
+                  label: 'semantics/global/time'.i18n(),
+                  child: Text(
+                    timeago.format(createdAt.toDate()),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 5
-            ),
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 18
+          Semantics(
+            label: 'semantics/global/text'.i18n(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 5
+              ),
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18
+                ),
               ),
             ),
           ),
           if (imageUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(right: 260),
-              child: Container(
-                width: 100,
-                height: 100,
-                margin: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 16,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          child: Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
+            Semantics(
+              label: 'semantics/global/review-image'.i18n(),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 260),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 16,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            child: Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -225,12 +246,15 @@ class _ReviewDetailState extends State<ReviewDetail> {
                       horizontal: 18,
                       vertical: 12,
                     ),
-                    child: Text(
-                      "${'review_detail/answer'.i18n()} (${comments.length})",
-                      style: TextStyle(
-                        color: isDarkMode ? whiteText : black,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 20,
+                    child: Semantics(
+                      label: 'semantics/review_detail/answer'.i18n(),
+                      child: Text(
+                        "${'review_detail/answer'.i18n()} (${comments.length})",
+                        style: TextStyle(
+                          color: isDarkMode ? whiteText : black,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -251,26 +275,35 @@ class _ReviewDetailState extends State<ReviewDetail> {
                                   final user = snapshot.data;
 
                                   return ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundImage: user!.imageUrl.isNotEmpty
-                                        ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
-                                        : const AssetImage('assets/profile/profile.png'),
+                                    leading: Semantics(
+                                      label: 'semantics/global/profile-picture'.i18n(),
+                                      child: CircleAvatar(
+                                        backgroundImage: user!.imageUrl.isNotEmpty
+                                          ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
+                                          : const AssetImage('assets/profile/profile.png'),
+                                      ),
                                     ),
                                     title: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        '${user.name}  •  ${timeago.format(time)}',
-                                        style: const TextStyle(
-                                          fontSize: 14
+                                      child: Semantics(
+                                        label: "${'semantics/global/user-name'.i18n()} and ${'semantics/global/time'.i18n()}",
+                                        child: Text(
+                                          '${user.name}  •  ${timeago.format(time)}',
+                                          style: const TextStyle(
+                                            fontSize: 14
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    subtitle: Text(
-                                      comment['text'],
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500,
-                                        color: isDarkMode ? whiteText : black
+                                    subtitle: Semantics(
+                                      label: 'semantics/review_detail/user-comment'.i18n(),
+                                      child: Text(
+                                        comment['text'],
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500,
+                                          color: isDarkMode ? whiteText : black
+                                        ),
                                       ),
                                     ),
                                   );
@@ -294,52 +327,61 @@ class _ReviewDetailState extends State<ReviewDetail> {
           const SizedBox(height: 60,)
         ],
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextFormField(
-          controller: commentCtrl,
-          textInputAction: TextInputAction.send,
-          keyboardType: TextInputType.multiline,
-          maxLines: 5,
-          minLines: 1,
-          style: const TextStyle(
-            fontSize: 17,
-          ),
-          validator: (text) {
-            if (text == null || text.isEmpty) {
-              return 'review_detail/comment-empty'.i18n();
-            }
-            return null;
-          },
-          onFieldSubmitted: ((value) {
-            if (commentCtrl.text.isNotEmpty) {
-              postComment(commentCtrl.text);
-              FocusScope.of(context).unfocus();
-            }
-          }),
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-              onPressed: () {
-                if (commentCtrl.text.isNotEmpty) {
-                  postComment(commentCtrl.text);
-                  FocusScope.of(context).unfocus();
-                } else {
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'review_detail/comment-empty'.i18n()
-                        ),
-                      ),
-                    );
-                }
-              },
-              icon: const Icon(Icons.send_rounded),
+      bottomSheet: Semantics(
+        label: 'semantics/review_detail/comment-field'.i18n(),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            controller: commentCtrl,
+            textInputAction: TextInputAction.send,
+            keyboardType: TextInputType.multiline,
+            maxLines: 5,
+            minLines: 1,
+            style: const TextStyle(
+              fontSize: 17,
             ),
-            contentPadding: const EdgeInsets.all(12),
-            hintText: 'review_detail/write-comment'.i18n(),
-            border: const UnderlineInputBorder(),
+            validator: (text) {
+              if (text == null || text.isEmpty) {
+                return 'review_detail/comment-empty'.i18n();
+              }
+              return null;
+            },
+            onFieldSubmitted: ((value) {
+              if (commentCtrl.text.isNotEmpty) {
+                postComment(commentCtrl.text);
+                FocusScope.of(context).unfocus();
+              }
+            }),
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                onPressed: () {
+                  if (commentCtrl.text.isNotEmpty) {
+                    postComment(commentCtrl.text);
+                    FocusScope.of(context).unfocus();
+                  } else {
+                    ScaffoldMessenger.of(context)
+                      ..removeCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'review_detail/comment-empty'.i18n()
+                          ),
+                        ),
+                      );
+                  }
+                },
+                icon: Semantics(
+                  onTapHint: 'semantics/review_detail/send-button'.i18n(),
+                  child: Tooltip(
+                    message: 'screen_layout/tooltip/send'.i18n(),
+                    child: const Icon(Icons.send_rounded)
+                  ),
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(12),
+              hintText: 'review_detail/write-comment'.i18n(),
+              border: const UnderlineInputBorder(),
+            ),
           ),
         ),
       ),

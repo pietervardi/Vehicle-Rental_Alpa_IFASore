@@ -101,25 +101,28 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    'home_screen/choose'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 28, 
-                      fontWeight: FontWeight.bold
+              Semantics(
+                label: 'semantics/home_screen/title'.i18n(),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      height: 50,
                     ),
-                  ),
-                  Text(
-                    'home_screen/car'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 28,
+                    Text(
+                      'home_screen/choose'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 28, 
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
-                  )
-                ],
+                    Text(
+                      'home_screen/car'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 28,
+                      ),
+                    )
+                  ],
+                ),
               ),
               StreamBuilder<List<Car>>(
                 stream: _carStreamController.stream,
@@ -155,19 +158,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       for (var car in displayedCars)
                         Column(
                           children: [
-                            CarCard(
-                              id: car.id,
-                              name: car.name,
-                              brand: car.brand,
-                              image: car.image,
-                              price: car.price,
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => CarDetailScreen(car: car),
-                                  ),
-                                );
-                              },
+                            Semantics(
+                              onTapHint: 'semantics/home_screen/car-card'.i18n(),
+                              child: CarCard(
+                                id: car.id,
+                                name: car.name,
+                                brand: car.brand,
+                                image: car.image,
+                                price: car.price,
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => CarDetailScreen(car: car),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                             const SizedBox(height: 10),
                           ],

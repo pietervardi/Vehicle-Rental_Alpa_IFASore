@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/screens/login_screen.dart';
 import 'package:vehicle_rental/utils/colors.dart';
@@ -71,21 +72,24 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
           backgroundColor: whiteText,
           elevation: 0,
           actions: [
-            TextButton(
-              onPressed: () {
-                _storeOnboardInfo();
-                Navigator.pushReplacement(
-                  context, MaterialPageRoute(
-                    builder: (context) => const LoginScreen()
-                  )
-                );
-              },
-              child: const Text(
-                'Skip',
-                style: TextStyle(
-                  color: gray,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold
+            Semantics(
+              onTapHint: 'semantics/onboard_screen/skip'.i18n(),
+              child: TextButton(
+                onPressed: () {
+                  _storeOnboardInfo();
+                  Navigator.pushReplacement(
+                    context, MaterialPageRoute(
+                      builder: (context) => const LoginScreen()
+                    )
+                  );
+                },
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: gray,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
             )
@@ -108,91 +112,106 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(screens[index].img),
-                  Text(
-                    screens[index].text,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                      color: black,
+                  Semantics(
+                    label: 'semantics/onboard_screen/image'.i18n(),
+                    child: Image.asset(screens[index].img)
+                  ),
+                  Semantics(
+                    label: 'semantics/onboard_screen/text'.i18n(),
+                    child: Text(
+                      screens[index].text,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                        color: black,
+                      ),
                     ),
                   ),
-                  Text(
-                    screens[index].desc,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Montserrat',
-                      color: black,
+                  Semantics(
+                    label: 'semantics/onboard_screen/description'.i18n(),
+                    child: Text(
+                      screens[index].desc,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        color: black,
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                    child: ListView.builder(
-                      itemCount: screens.length,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  Semantics(
+                    label: 'semantics/onboard_screen/page'.i18n(),
+                    child: SizedBox(
+                      height: 10,
+                      child: ListView.builder(
+                        itemCount: screens.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 3),
+                                width: currentIndex == index ? 25 : 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: currentIndex == index
+                                    ? brown
+                                    : brown2,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ]
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Semantics(
+                    onTapHint: 'semantics/onboard_screen/button'.i18n(),
+                    child: InkWell(
+                      onTap: () async {
+                        if (index == screens.length - 1) {
+                          await _storeOnboardInfo();
+                          if (mounted) {
+                            Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => const LoginScreen())
+                            );
+                          }
+                        }
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 160,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 13
+                        ),
+                        decoration: BoxDecoration(
+                          color: orange,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, 
                           children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 3),
-                              width: currentIndex == index ? 25 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: currentIndex == index
-                                  ? brown
-                                  : brown2,
-                                borderRadius: BorderRadius.circular(10.0),
+                            Text(
+                              currentIndex == screens.length - 1 
+                                ? 'GET STARTED' 
+                                : 'NEXT',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: whiteText,
                               ),
                             ),
                           ]
-                        );
-                      },
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      if (index == screens.length - 1) {
-                        await _storeOnboardInfo();
-                        if (mounted) {
-                          Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => const LoginScreen())
-                          );
-                        }
-                      }
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 160,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 13
-                      ),
-                      decoration: BoxDecoration(
-                        color: orange,
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min, 
-                        children: [
-                          Text(
-                            currentIndex == screens.length - 1 
-                              ? 'GET STARTED' 
-                              : 'NEXT',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: whiteText,
-                            ),
-                          ),
-                        ]
+                        ),
                       ),
                     ),
                   )

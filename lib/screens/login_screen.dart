@@ -100,17 +100,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 340,
                 child: Column(children: [
                   const SizedBox(height: 25,),
-                  Image.asset(
-                    'assets/illustration/form.jpg',
-                    width: 251,
-                    height: 274,
+                  Semantics(
+                    label: 'semantics/global/auth-image'.i18n(),
+                    child: Image.asset(
+                      'assets/illustration/form.jpg',
+                      width: 251,
+                      height: 274,
+                    ),
                   ),
-                  Text(
-                    'login_screen/title'.i18n(),
-                    style: GoogleFonts.roboto(
-                      fontSize: 40, 
-                      color: signText, 
-                      fontWeight: FontWeight.bold
+                  Semantics(
+                    label: 'semantics/login_screen/title'.i18n(),
+                    child: Text(
+                      'login_screen/title'.i18n(),
+                      style: GoogleFonts.roboto(
+                        fontSize: 40, 
+                        color: signText, 
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                   Container(
@@ -121,44 +127,53 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomTextFormField(
-                            controller: emailCtrl,
-                            icon: Icons.email_outlined,
-                            inputType: TextInputType.emailAddress,
-                            hintName: 'global/email'.i18n()
+                          Semantics(
+                            label: 'semantics/global/email'.i18n(),
+                            child: CustomTextFormField(
+                              controller: emailCtrl,
+                              icon: Icons.email_outlined,
+                              inputType: TextInputType.emailAddress,
+                              hintName: 'global/email'.i18n()
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
-                          CustomTextFormField(
-                            controller: passwordCtrl,
-                            icon: Icons.lock_outlined,
-                            isObscureText: true,
-                            hintName: 'global/password'.i18n()
+                          Semantics(
+                            label: 'semantics/global/password'.i18n(),
+                            child: CustomTextFormField(
+                              controller: passwordCtrl,
+                              icon: Icons.lock_outlined,
+                              isObscureText: true,
+                              hintName: 'global/password'.i18n()
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Visibility(
-                      visible: !isLoading,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)
-                          ),
-                          backgroundColor: primaryButton,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 120, 
-                            vertical: 20)
-                          ),
-                        onPressed: login,
-                        child: Text(
-                          'login_screen/button'.i18n(),
-                          style: const TextStyle(fontSize: 20),
-                        )
+                  Semantics(
+                    onTapHint: 'semantics/login_screen/login-button'.i18n(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Visibility(
+                        visible: !isLoading,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            backgroundColor: primaryButton,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 120, 
+                              vertical: 20)
+                            ),
+                          onPressed: login,
+                          child: Text(
+                            'login_screen/button'.i18n(),
+                            style: const TextStyle(fontSize: 20),
+                          )
+                        ),
                       ),
                     ),
                   ),
@@ -169,18 +184,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('login_screen/no-account'.i18n()),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const RegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'login_screen/signup'.i18n(),
-                          style: const TextStyle(color: primaryButton),
-                        )
+                      Semantics(
+                        label: 'semantics/login_screen/no-account'.i18n(),
+                        child: Text('login_screen/no-account'.i18n())
+                      ),
+                      Semantics(
+                        onTapHint: 'semantics/login_screen/no-account-button'.i18n(),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const RegisterScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'login_screen/signup'.i18n(),
+                            style: const TextStyle(color: primaryButton),
+                          )
+                        ),
                       )
                     ],
                   ),

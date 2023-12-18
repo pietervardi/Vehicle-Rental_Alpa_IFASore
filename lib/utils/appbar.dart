@@ -37,20 +37,28 @@ AppBar buildAppBar(BuildContext context, int currentPage) {
       builder: (context, provider, child) {
         final isDarkMode = provider.currentTheme == 'dark';
 
-        return IconButton(
-          icon: isDarkMode 
-            ? const Icon(
-                Icons.dark_mode_sharp,
-                color: blue,
-              ) 
-            : const Icon(
-                Icons.light_mode_sharp,
-                color: lightMode,
-              ),
-          onPressed: () {
-            final newTheme = isDarkMode ? 'light' : 'dark';
-            provider.changeTheme(newTheme);
-          },
+        return Tooltip(
+          message: 'screen_layout/tooltip/theme'.i18n(),
+          child: Semantics(
+            hint: isDarkMode
+              ? 'semantics/appbar/light-mode'.i18n()
+              : 'semantics/appbar/dark-mode'.i18n(),
+            child: IconButton(
+              icon: isDarkMode 
+                ? const Icon(
+                    Icons.dark_mode_sharp,
+                    color: blue,
+                  ) 
+                : const Icon(
+                    Icons.light_mode_sharp,
+                    color: lightMode,
+                  ),
+              onPressed: () {
+                final newTheme = isDarkMode ? 'light' : 'dark';
+                provider.changeTheme(newTheme);
+              },
+            ),
+          ),
         );
       },
     ),
@@ -59,96 +67,126 @@ AppBar buildAppBar(BuildContext context, int currentPage) {
         builder: (context, provider, child) {
           final isDarkMode = provider.currentTheme == 'dark';
 
-          return PopupMenuButton(
-            icon: Icon(
-              Icons.language,
-              color: isDarkMode ? Colors.white : Colors.black,
+          return Tooltip(
+            message: 'screen_layout/tooltip/language'.i18n(),
+            child: Semantics(
+              onTapHint: 'semantics/appbar/language'.i18n(),
+              child: PopupMenuButton(
+                icon: Icon(
+                  Icons.language,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                ),
+                onSelected: (value) {
+                  _changeLanguage(context, currentPage, value['languageCode'], value['countryCode']);
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    value: const {'languageCode': 'en', 'countryCode': 'US'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/english'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇺🇸'),
+                          SizedBox(width: 8,),
+                          Text('English'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'id', 'countryCode': 'ID'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/bahasa-indonesia'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇮🇩'),
+                          SizedBox(width: 8,),
+                          Text('Bahasa Indonesia'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'zh', 'countryCode': 'CN'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/mandarin'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇨🇳'),
+                          SizedBox(width: 8,),
+                          Text('Mandarin'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'ja', 'countryCode': 'JP'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/japanese'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇯🇵'),
+                          SizedBox(width: 8,),
+                          Text('Japanese'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'ko', 'countryCode': 'KR'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/korean'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇰🇷'),
+                          SizedBox(width: 8,),
+                          Text('Korean'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'es', 'countryCode': 'ES'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/espanyol'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇪🇸'),
+                          SizedBox(width: 8,),
+                          Text('Espanyol'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'fr', 'countryCode': 'FR'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/french'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇫🇷'),
+                          SizedBox(width: 8,),
+                          Text('French'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: const {'languageCode': 'ru', 'countryCode': 'RU'},
+                    child: Semantics(
+                      onTapHint: 'semantics/appbar/russian'.i18n(),
+                      child: const Row(
+                        children: [
+                          Text('🇷🇺'),
+                          SizedBox(width: 8,),
+                          Text('Russian'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            onSelected: (value) {
-              _changeLanguage(context, currentPage, value['languageCode'], value['countryCode']);
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: {'languageCode': 'en', 'countryCode': 'US'},
-                child: Row(
-                  children: [
-                    Text('🇺🇸'),
-                    SizedBox(width: 8,),
-                    Text('English'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'id', 'countryCode': 'ID'},
-                child: Row(
-                  children: [
-                    Text('🇮🇩'),
-                    SizedBox(width: 8,),
-                    Text('Bahasa Indonesia'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'zh', 'countryCode': 'HK'},
-                child: Row(
-                  children: [
-                    Text('🇨🇳'),
-                    SizedBox(width: 8,),
-                    Text('China'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'ja', 'countryCode': 'JP'},
-                child: Row(
-                  children: [
-                    Text('🇯🇵'),
-                    SizedBox(width: 8,),
-                    Text('Japan'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'ko', 'countryCode': 'KR'},
-                child: Row(
-                  children: [
-                    Text('🇰🇷'),
-                    SizedBox(width: 8,),
-                    Text('Korea'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'es', 'countryCode': 'ES'},
-                child: Row(
-                  children: [
-                    Text('🇪🇸'),
-                    SizedBox(width: 8,),
-                    Text('Espanyol'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'fr', 'countryCode': 'FR'},
-                child: Row(
-                  children: [
-                    Text('🇫🇷'),
-                    SizedBox(width: 8,),
-                    Text('France'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: {'languageCode': 'ru', 'countryCode': 'RU'},
-                child: Row(
-                  children: [
-                    Text('🇷🇺'),
-                    SizedBox(width: 8,),
-                    Text('Rusia'),
-                  ],
-                ),
-              ),
-            ],
           );
         },
       ),

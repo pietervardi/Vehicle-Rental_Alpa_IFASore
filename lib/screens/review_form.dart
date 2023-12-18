@@ -129,17 +129,23 @@ class _ReviewFormState extends State<ReviewForm> {
           backgroundColor: Colors.transparent,
           leading: Consumer<ThemeProvider>(
             builder: (context, provider, child) {
-              return IconButton(
-                icon: Icon(
-                  Icons.keyboard_arrow_left_outlined,
-                  color: isDarkMode ? whiteText : black,
-                  size: 28,
+              return Semantics(
+                onTapHint: 'semantics/global/back-button'.i18n(),
+                child: Tooltip(
+                  message: 'screen_layout/tooltip/back'.i18n(),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.keyboard_arrow_left_outlined,
+                      color: isDarkMode ? whiteText : black,
+                      size: 28,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(context, NoAnimationPageRoute(
+                        builder: (context) => const ScreenLayout(page: 2),
+                      ));
+                    },
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.pushReplacement(context, NoAnimationPageRoute(
-                    builder: (context) => const ScreenLayout(page: 2),
-                  ));
-                },
               );
             },
           ),
@@ -166,141 +172,162 @@ class _ReviewFormState extends State<ReviewForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'review_form/subtitle'.i18n(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold
+                        Semantics(
+                          label: 'semantics/review_form/subtitle'.i18n(),
+                          child: Text(
+                            'review_form/subtitle'.i18n(),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RatingBar.builder(
-                              minRating: 1,
-                              maxRating: 5,
-                              initialRating: rating,
-                              itemSize: 40,
-                              itemBuilder: (context, _) => const Icon(
-                                Icons.star_rounded,
-                                color: Colors.amber,
+                        Semantics(
+                          onTapHint: 'semantics/review_form/rate'.i18n(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RatingBar.builder(
+                                minRating: 1,
+                                maxRating: 5,
+                                initialRating: rating,
+                                itemSize: 40,
+                                itemBuilder: (context, _) => const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                ),
+                                updateOnDrag: true,
+                                onRatingUpdate: (rating) => setState(() {
+                                  this.rating = rating;
+                                })
                               ),
-                              updateOnDrag: true,
-                              onRatingUpdate: (rating) => setState(() {
-                                this.rating = rating;
-                              })
-                            ),
-                            Text(
-                              getRatingText(rating),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: gray
-                              ),
-                            )
-                          ],
+                              Text(
+                                getRatingText(rating),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: gray
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(
-                    'review_form/add-photo'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
+                Semantics(
+                  label: 'semantics/review_form/add-photo-title'.i18n(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      'review_form/add-photo'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 15),
-                GestureDetector(
-                  onTap: _showImageDialog,
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 150,
-                      child: _image != null 
-                      ?
-                        Image.memory(
-                          _image!,
-                        )
-                      : 
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.cloud_upload_rounded,
-                              size: 40,
-                            ),
-                            const SizedBox(height: 5,),
-                            Text(
-                              'review_form/click-here-to-upload'.i18n(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold
-                              ),
-                            )
-                          ],
-                        ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(
-                    'review_form/your-comment'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: TextField(
-                    controller: textCtrl,
-                    maxLines: 6,
-                    style: const TextStyle(fontSize: 16),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: isDarkMode ? null : whiteText,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
+                Semantics(
+                  onTapHint: 'semantics/review_form/add-photo'.i18n(),
+                  child: GestureDetector(
+                    onTap: _showImageDialog,
+                    child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      hintText: 'review_form/type-your-comment-here'.i18n(),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 150,
+                        child: _image != null 
+                        ?
+                          Image.memory(
+                            _image!,
+                          )
+                        : 
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.cloud_upload_rounded,
+                                size: 40,
+                              ),
+                              const SizedBox(height: 5,),
+                              Text(
+                                'review_form/click-here-to-upload'.i18n(),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              )
+                            ],
+                          ),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      createReview();
-                      Navigator.pushReplacement(context, NoAnimationPageRoute(
-                        builder: (context) => const ScreenLayout(page: 2),
-                      ));
-                      ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('review_form/create-review'.i18n()));
-                    }, 
+                Semantics(
+                  label: 'semantics/review_form/comment-title'.i18n(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Text(
-                      'review_form/button'.i18n(),
+                      'review_form/your-comment'.i18n(),
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold
                       ),
-                    )
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Semantics(
+                  label: 'semantics/review_form/comment'.i18n(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: TextField(
+                      controller: textCtrl,
+                      maxLines: 6,
+                      style: const TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: isDarkMode ? null : whiteText,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        hintText: 'review_form/type-your-comment-here'.i18n(),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Semantics(
+                  onTapHint: 'semantics/review_form/button'.i18n(),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        createReview();
+                        Navigator.pushReplacement(context, NoAnimationPageRoute(
+                          builder: (context) => const ScreenLayout(page: 2),
+                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('review_form/create-review'.i18n()));
+                      }, 
+                      child: Text(
+                        'review_form/button'.i18n(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900
+                        ),
+                      )
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -317,63 +344,72 @@ class _ReviewFormState extends State<ReviewForm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'global/title-dialog'.i18n(),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
+          title: Semantics(
+            label: 'semantics/global/image-dialog-title'.i18n(),
+            child: Text(
+              'global/title-dialog'.i18n(),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  storage();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: blue,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.image, color: whiteText),
-                    const SizedBox(width: 8),
-                    Text(
-                      'global/choose-existing-photo'.i18n(),
-                      style: const TextStyle(
-                        color: whiteText,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      )
-                    ),
-                  ],
+              Semantics(
+                onTapHint: 'semantics/global/image-dialog-storage'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    storage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: blue,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.image, color: whiteText),
+                      const SizedBox(width: 8),
+                      Text(
+                        'global/choose-existing-photo'.i18n(),
+                        style: const TextStyle(
+                          color: whiteText,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        )
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 5,),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  camera();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: green,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.camera_alt, color: whiteText), // Icon
-                    const SizedBox(width: 8),
-                    Text(
-                      'global/take-photo'.i18n(), 
-                      style: const TextStyle(
-                        color: whiteText,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      )
-                    ),
-                  ],
+              Semantics(
+                onTapHint: 'semantics/global/image-dialog-camera'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    camera();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: green,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.camera_alt, color: whiteText), // Icon
+                      const SizedBox(width: 8),
+                      Text(
+                        'global/take-photo'.i18n(), 
+                        style: const TextStyle(
+                          color: whiteText,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        )
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

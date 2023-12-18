@@ -58,15 +58,21 @@ class CarDetailScreen extends StatelessWidget {
           builder: (context, provider, child) {
             final isDarkMode = provider.currentTheme == 'dark';
 
-            return IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_left_outlined,
-                color: isDarkMode ? Colors.white : Colors.black,
-                size: 28,
+            return Semantics(
+              onTapHint: 'semantics/global/back-button'.i18n(),
+              child: Tooltip(
+                message: 'screen_layout/tooltip/back'.i18n(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_left_outlined,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             );
           },
         ),
@@ -76,66 +82,84 @@ class CarDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              car.name,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+            Semantics(
+              label: 'semantics/global/car-name'.i18n(),
+              child: Text(
+                car.name,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            Text(
-              car.brand,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+            Semantics(
+              label: 'semantics/global/car-brand'.i18n(),
+              child: Text(
+                car.brand,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             const SizedBox(height: 15),
-            Image.asset(car.image),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Text(
-                'detail_screen/specifications'.i18n(),
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: gray
+            Semantics(
+              label: 'semantics/global/car-image'.i18n(),
+              child: Image.asset(car.image)
+            ),
+            Semantics(
+              label: 'semantics/detail_screen/specification-title'.i18n(),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  'detail_screen/specifications'.i18n(),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: gray
+                  ),
                 ),
               ),
             ),
-            Container(
-              height: 120,
-              padding: const EdgeInsets.only(top: 8),
-              margin: const EdgeInsets.only(top: 10),
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  buildSpecificationCar(Icons.color_lens_outlined, 'detail_screen/color'.i18n(), car.color),
-                  buildSpecificationCar(Icons.directions_car_outlined, 'detail_screen/gearbox'.i18n(), car.gearbox),
-                  buildSpecificationCar(Icons.people_outlined, 'detail_screen/seat'.i18n(), '( 1 - ${car.seat} )'),
-                  buildSpecificationCar(Icons.local_gas_station_outlined, 'detail_screen/fuel'.i18n(), car.fuel),
-                  buildSpecificationCar(Icons.speed_outlined, 'detail_screen/power'.i18n(), '${car.power} hp'),
-                ],
+            Semantics(
+              label: 'semantics/detail_screen/specification-detail'.i18n(),
+              child: Container(
+                height: 120,
+                padding: const EdgeInsets.only(top: 8),
+                margin: const EdgeInsets.only(top: 10),
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    buildSpecificationCar(Icons.color_lens_outlined, 'detail_screen/color'.i18n(), car.color),
+                    buildSpecificationCar(Icons.directions_car_outlined, 'detail_screen/gearbox'.i18n(), car.gearbox),
+                    buildSpecificationCar(Icons.people_outlined, 'detail_screen/seat'.i18n(), '( 1 - ${car.seat} )'),
+                    buildSpecificationCar(Icons.local_gas_station_outlined, 'detail_screen/fuel'.i18n(), car.fuel),
+                    buildSpecificationCar(Icons.speed_outlined, 'detail_screen/power'.i18n(), '${car.power} hp'),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 50,),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-                ),
-                onPressed: () {
-                  updateBook(car.id);
-                },
-                child: Text(
-                  'global/book-button'.i18n(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 17
+            Semantics(
+              onTapHint: 'semantics/global/book-button'.i18n(),
+              child: Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
                   ),
-                )
+                  onPressed: () {
+                    updateBook(car.id);
+                  },
+                  child: Text(
+                    'global/book-button'.i18n(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 17
+                    ),
+                  )
+                ),
               ),
             ),
           ],

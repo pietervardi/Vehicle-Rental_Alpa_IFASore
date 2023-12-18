@@ -82,28 +82,46 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
           ),
         ),
         backgroundColor: black,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.keyboard_arrow_left_outlined,
-            size: 28,
-          ),
-          onPressed: () {
-            Navigator.pushReplacement(context, NoAnimationPageRoute(
-              builder: (context) => const ScreenLayout(page: 3),
-            ));
-          },
-        ),
-        actions: [
-          IconButton(
-            onPressed: _showImageDialog,
-            icon: const Icon(
-              Icons.edit_outlined,
+        leading: Semantics(
+          onTapHint: 'semantics/global/back-button'.i18n(),
+          child: Tooltip(
+            message: 'screen_layout/tooltip/back'.i18n(),
+            child: IconButton(
+              icon: const Icon(
+                Icons.keyboard_arrow_left_outlined,
+                size: 28,
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(context, NoAnimationPageRoute(
+                  builder: (context) => const ScreenLayout(page: 3),
+                ));
+              },
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.share_outlined,
+        ),
+        actions: [
+          Semantics(
+            onTapHint: 'semantics/profile_picture_screen/edit-picture'.i18n(),
+            child: Tooltip(
+              message: 'screen_layout/tooltip/edit'.i18n(),
+              child: IconButton(
+                onPressed: _showImageDialog,
+                icon: const Icon(
+                  Icons.edit_outlined,
+                ),
+              ),
+            ),
+          ),
+          Semantics(
+            onTapHint: 'semantics/profile_picture_screen/share'.i18n(),
+            child: Tooltip(
+              message: 'screen_layout/tooltip/share'.i18n(),
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.share_outlined,
+                ),
+              ),
             ),
           ),
         ],
@@ -112,47 +130,53 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Center(
-            child: SizedBox(
-              height: 400,
-              child: _image != null 
-                ?
-                  Image.memory(
-                    _image!,
-                    fit: BoxFit.contain,
-                  )
-                : 
-                  widget.imageUrl.isNotEmpty
-                  ? Image.network(
-                      widget.imageUrl,
+          Semantics(
+            label: 'semantics/profile_picture_screen/profile-picture'.i18n(),
+            child: Center(
+              child: SizedBox(
+                height: 400,
+                child: _image != null 
+                  ?
+                    Image.memory(
+                      _image!,
                       fit: BoxFit.contain,
                     )
-                  : Image.asset(
-                      'assets/profile/profile.png',
-                      fit: BoxFit.contain,
-                    ),
+                  : 
+                    widget.imageUrl.isNotEmpty
+                    ? Image.network(
+                        widget.imageUrl,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        'assets/profile/profile.png',
+                        fit: BoxFit.contain,
+                      ),
+              ),
             ),
           ),
           if (_image != null)
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  updateProfilePicture();
-                  Navigator.pushReplacement(context, NoAnimationPageRoute(
-                    builder: (context) => const ScreenLayout(page: 3),
-                  ));
-                  ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('profile_picture_screen/update-profile-picture'.i18n()));
-                }, 
-                child: Text(
-                  'global/update'.i18n(),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900
-                  ),
-                )
+            Semantics(
+              label: 'semantics/profile_picture_screen/update-button'.i18n(),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    updateProfilePicture();
+                    Navigator.pushReplacement(context, NoAnimationPageRoute(
+                      builder: (context) => const ScreenLayout(page: 3),
+                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(buildSnackBarSuccess('profile_picture_screen/update-profile-picture'.i18n()));
+                  }, 
+                  child: Text(
+                    'global/update'.i18n(),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900
+                    ),
+                  )
+                ),
               ),
             )
         ],
@@ -165,63 +189,72 @@ class _ProfilePictureScreenState extends State<ProfilePictureScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'global/title-dialog'.i18n(),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
+          title: Semantics(
+            label: 'semantics/global/image-dialog-title'.i18n(),
+            child: Text(
+              'global/title-dialog'.i18n(),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  storage();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: blue,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.image, color: whiteText),
-                    const SizedBox(width: 8),
-                    Text(
-                      'global/choose-existing-photo'.i18n(), 
-                      style: const TextStyle(
-                        color: whiteText,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      )
-                    ),
-                  ],
+              Semantics(
+                onTapHint: 'semantics/global/image-dialog-storage'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    storage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: blue,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.image, color: whiteText),
+                      const SizedBox(width: 8),
+                      Text(
+                        'global/choose-existing-photo'.i18n(), 
+                        style: const TextStyle(
+                          color: whiteText,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        )
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 5,),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  camera();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: green,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.camera_alt, color: whiteText),
-                    const SizedBox(width: 8),
-                    Text(
-                      'global/take-photo'.i18n(), 
-                      style: const TextStyle(
-                        color: whiteText,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      )
-                    ),
-                  ],
+              Semantics(
+                onTapHint: 'semantics/global/image-dialog-camera'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    camera();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: green,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.camera_alt, color: whiteText),
+                      const SizedBox(width: 8),
+                      Text(
+                        'global/take-photo'.i18n(), 
+                        style: const TextStyle(
+                          color: whiteText,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        )
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -67,60 +67,72 @@ class BookedCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      fontFamily: "arial"
+                  Semantics(
+                    label: 'semantics/global/car-name'.i18n(),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        fontFamily: "arial"
+                      ),
                     ),
                   ),
-                  Text(
-                    brand,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: gray,
-                      fontSize: 18,
-                      fontFamily: "arial"
+                  Semantics(
+                    label: 'semantics/global/car-brand'.i18n(),
+                    child: Text(
+                      brand,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: gray,
+                        fontSize: 18,
+                        fontFamily: "arial"
+                      ),
                     ),
                   )
                 ],
               ),
             ),
             const SizedBox(height: 5,),
-            Image.asset(
-              image,
-              width: 250,
+            Semantics(
+              label: 'semantics/global/car-image'.i18n(),
+              child: Image.asset(
+                image,
+                width: 250,
+              ),
             ),
             const SizedBox(height: 5,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: gray,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(20),
-                          bottomLeft: Radius.circular(20)
+            Semantics(
+              onTapHint: 'semantics/global/unbook-button'.i18n(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: gray,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20)
+                          ),
                         ),
                       ),
+                      onPressed: () {
+                        updateBook(id);
+                      },
+                      child: Text(
+                        'global/unbook-button'.i18n(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 17
+                        ),
+                      )
                     ),
-                    onPressed: () {
-                      updateBook(id);
-                    },
-                    child: Text(
-                      'global/unbook-button'.i18n(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 17
-                      ),
-                    )
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             )
           ],
         ),

@@ -144,53 +144,59 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     horizontal: 20,
                     vertical: 10
                   ),
-                  child: Text(
-                    'review_screen/title'.i18n(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 25
+                  child: Semantics(
+                    label: 'semantics/review_screen/title'.i18n(),
+                    child: Text(
+                      'review_screen/title'.i18n(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 25
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                        size: 40,
-                      ),
-                      const SizedBox(width: 3,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            averageRating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 30
-                            ),
-                          ),
-                          const Text(
-                            '/5.0',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18,
-                              color: gray
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 20,),
-                      Text(
-                        "${'review_screen/from'.i18n()} ${snapshot1.data!.length} ${'review_screen/people'.i18n()}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400
+                Semantics(
+                  label: 'semantics/review_screen/rate'.i18n(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                          size: 40,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 3,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              averageRating.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30
+                              ),
+                            ),
+                            const Text(
+                              '/5.0',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: gray
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 20,),
+                        Text(
+                          "${'review_screen/from'.i18n()} ${snapshot1.data!.length} ${'review_screen/people'.i18n()}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -205,13 +211,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
           return Container();
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(context, NoAnimationPageRoute(
-            builder: (context) => const ReviewForm(),
-          ));
-        },
-        child: const Icon(Icons.add_outlined),
+      floatingActionButton: Semantics(
+        onTapHint: 'semantics/review_screen/add-button'.i18n(),
+        child: Tooltip(
+          message: 'screen_layout/tooltip/add'.i18n(),
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushReplacement(context, NoAnimationPageRoute(
+                builder: (context) => const ReviewForm(),
+              ));
+            },
+            child: const Icon(Icons.add_outlined),
+          ),
+        ),
       ),
     );
   }
@@ -219,213 +231,248 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Widget buildReview(Review review) {
     final isDarkMode = Provider.of<ThemeProvider>(context).currentTheme == 'dark';
 
-    return InkWell(
-      splashFactory: NoSplash.splashFactory,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onTap: () async {
-        UserFirebase? user = await readUser(review.userId);
-        if (user != null && mounted) {
-          Navigator.push(
-            context,
-            NoAnimationPageRoute(
-              builder: (context) => ReviewDetail(
-                id: review.id,
-                name: user.name,
-                text: review.text,
-                profilePicture: user.imageUrl,
-                imageUrl: review.imageUrl,
-                createdAt: review.createdAt,
+    return Semantics(
+      onTapHint: 'semantics/review_screen/detail'.i18n(),
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onTap: () async {
+          UserFirebase? user = await readUser(review.userId);
+          if (user != null && mounted) {
+            Navigator.push(
+              context,
+              NoAnimationPageRoute(
+                builder: (context) => ReviewDetail(
+                  id: review.id,
+                  name: user.name,
+                  text: review.text,
+                  profilePicture: user.imageUrl,
+                  imageUrl: review.imageUrl,
+                  createdAt: review.createdAt,
+                ),
               ),
-            ),
-          );
-        }
-      },
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FutureBuilder<UserFirebase?>(
-              future: readUser(review.userId),
-              builder: (context, snapshot2) {
-                if(snapshot2.hasData) {
-                  final user = snapshot2.data;
-
-                  return ListTile(
+            );
+          }
+        },
+        child: Card(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FutureBuilder<UserFirebase?>(
+                future: readUser(review.userId),
+                builder: (context, snapshot2) {
+                  if(snapshot2.hasData) {
+                    final user = snapshot2.data;
+    
+                    return ListTile(
+                      leading: Semantics(
+                        label: 'semantics/global/profile-picture'.i18n(),
+                        child: CircleAvatar(
+                          backgroundImage: user!.imageUrl.isNotEmpty
+                            ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
+                            : const AssetImage('assets/profile/profile.png'),
+                        ),
+                      ),
+                      title: Semantics(
+                        label: 'semantics/global/user-name'.i18n(),
+                        child: Text(
+                          user.name.isEmpty
+                            ? 'review_screen/user-deleted'.i18n()
+                            : user.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      subtitle: Semantics(
+                        label: 'semantics/review_screen/info'.i18n(),
+                        child: Text(
+                          "${review.comments.length.toString()} ${'review_screen/reply'.i18n()}  •  ${review.likes.length.toString()} ${'review_screen/helped'.i18n()}",
+                          style: const TextStyle(
+                            fontSize: 13
+                          ),
+                        ),
+                      ),
+                      trailing: Semantics(
+                        onTapHint: 'semantics/review_screen/more'.i18n(),
+                        child: GestureDetector(
+                          onTap: () {
+                            showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
+                              deleteReview(reviewId)
+                            );
+                          },
+                          child: const Icon(
+                            Icons.more_vert_outlined
+                          )
+                        ),
+                      ),
+                    );
+                  }
+                  return const ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: user!.imageUrl.isNotEmpty
-                        ? NetworkImage(user.imageUrl) as ImageProvider<Object>?
-                        : const AssetImage('assets/profile/profile.png'),
+                      backgroundColor: Colors.transparent,
                     ),
-                    title: Text(
-                      user.name.isEmpty
-                        ? 'review_screen/user-deleted'.i18n()
-                        : user.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    subtitle: Text(
-                      "${review.comments.length.toString()} ${'review_screen/reply'.i18n()}  •  ${review.likes.length.toString()} ${'review_screen/helped'.i18n()}",
-                      style: const TextStyle(
-                        fontSize: 13
-                      ),
-                    ),
-                    trailing: GestureDetector(
-                      onTap: () {
-                        showCustomModalBottomSheet(context, isDarkMode, userId, review.userId, review.id, (reviewId) =>
-                          deleteReview(reviewId)
-                        );
-                      },
-                      child: const Icon(
-                        Icons.more_vert_outlined
-                      )
-                    ),
+                    title: Text(''),
+                    subtitle: Text(''),
+                    trailing: Icon(
+                      Icons.more_vert_outlined
+                    )
                   );
                 }
-                return const ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                  ),
-                  title: Text(''),
-                  subtitle: Text(''),
-                  trailing: Icon(
-                    Icons.more_vert_outlined
-                  )
-                );
-              }
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  RatingBar.builder(
-                    initialRating: review.rate,
-                    ignoreGestures: true,
-                    itemSize: 25,
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star_rounded,
-                      color: Colors.amber,
-                    ), 
-                    onRatingUpdate: (rating) {},
-                  ),
-                  const SizedBox(width: 5,),
-                  Text(
-                    timeago.format(review.createdAt.toDate()),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w300
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    Semantics(
+                      label: 'semantics/review_screen/rating'.i18n(),
+                      child: RatingBar.builder(
+                        initialRating: review.rate,
+                        ignoreGestures: true,
+                        itemSize: 25,
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                        ), 
+                        onRatingUpdate: (rating) {},
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(height: 15,),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16
-              ),
-              child: Text(
-                review.text,
-                style: const TextStyle(
-                  fontSize: 16,
+                    const SizedBox(width: 5,),
+                    Semantics(
+                      label: 'semantics/global/time'.i18n(),
+                      child: Text(
+                        timeago.format(review.createdAt.toDate()),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            const SizedBox(height: 20,),
-            if (review.imageUrl.isNotEmpty)
-              Container(
-                width: 100,
-                height: 100,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 16,
+              const SizedBox(height: 15,),
+              Semantics(
+                label: 'semantics/global/text'.i18n(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16
+                  ),
+                  child: Text(
+                    review.text,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                child: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          child: Image.network(
-                            review.imageUrl,
-                            fit: BoxFit.cover,
-                          ),
+              ),
+              const SizedBox(height: 20,),
+              if (review.imageUrl.isNotEmpty)
+                Semantics(
+                  label: 'semantics/global/review-image'.i18n(),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              child: Image.network(
+                                review.imageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      review.imageUrl,
-                      fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          review.imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            const SizedBox(height: 20,),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18
-              ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (review.likes.contains(userId)) {
-                        dislikeReview(context, review.id);
-                      } else {
-                        likeReview(context, review.id);
-                      }
-                    },
-                    child: review.likes.contains(userId)
-                      ? Icon(
-                          Icons.thumb_up_rounded,
-                          size: 17,
-                          color: isDarkMode ? whiteText : black,
-                        )
-                      : const Icon(
-                          Icons.thumb_up_outlined,
+              const SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18
+                ),
+                child: Row(
+                  children: [
+                    Semantics(
+                      hint: review.likes.contains(userId)
+                        ? 'semantics/review_screen/dislike'.i18n()
+                        : 'semantics/review_screen/like'.i18n(),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (review.likes.contains(userId)) {
+                            dislikeReview(context, review.id);
+                          } else {
+                            likeReview(context, review.id);
+                          }
+                        },
+                        child: review.likes.contains(userId)
+                          ? Icon(
+                              Icons.thumb_up_rounded,
+                              size: 17,
+                              color: isDarkMode ? whiteText : black,
+                            )
+                          : const Icon(
+                              Icons.thumb_up_outlined,
+                              size: 17,
+                            ),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    Text(review.likes.length.toString()),
+                    const SizedBox(width: 15,),
+                    GestureDetector(
+                      onTap: () async {
+                        UserFirebase? user = await readUser(review.userId);
+                        if (user != null && mounted) {
+                          Navigator.push(
+                            context,
+                            NoAnimationPageRoute(
+                              builder: (context) => ReviewDetail(
+                                id: review.id,
+                                name: user.name,
+                                text: review.text,
+                                profilePicture: user.imageUrl,
+                                imageUrl: review.imageUrl,
+                                createdAt: review.createdAt,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: Semantics(
+                        label: 'semantics/review_screen/comment'.i18n(),
+                        child: const Icon(
+                          Icons.chat_bubble_outline,
                           size: 17,
                         ),
-                  ),
-                  const SizedBox(width: 5,),
-                  Text(review.likes.length.toString()),
-                  const SizedBox(width: 15,),
-                  GestureDetector(
-                    onTap: () async {
-                      UserFirebase? user = await readUser(review.userId);
-                      if (user != null && mounted) {
-                        Navigator.push(
-                          context,
-                          NoAnimationPageRoute(
-                            builder: (context) => ReviewDetail(
-                              id: review.id,
-                              name: user.name,
-                              text: review.text,
-                              profilePicture: user.imageUrl,
-                              imageUrl: review.imageUrl,
-                              createdAt: review.createdAt,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: const Icon(
-                      Icons.chat_bubble_outline,
-                      size: 17,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 5,),
-                  Text(review.comments.length.toString())
-                ],
+                    const SizedBox(width: 5,),
+                    Text(review.comments.length.toString())
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 15,)
-          ],
+              const SizedBox(height: 15,)
+            ],
+          ),
         ),
       ),
     );

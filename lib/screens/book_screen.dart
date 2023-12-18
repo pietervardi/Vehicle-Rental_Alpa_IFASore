@@ -42,25 +42,28 @@ class _BookScreenState extends State<BookScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    'book_screen/car'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 28, 
-                      fontWeight: FontWeight.bold
+              Semantics(
+                label: 'semantics/book_screen/title'.i18n(),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      height: 50,
                     ),
-                  ),
-                  Text(
-                    'book_screen/booked'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 28,
+                    Text(
+                      'book_screen/car'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 28, 
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
-                  )
-                ],
+                    Text(
+                      'book_screen/booked'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 28,
+                      ),
+                    )
+                  ],
+                ),
               ),
               FutureBuilder<List<Car>>(
                 future: fetchCarData(),
@@ -111,18 +114,21 @@ class _BookScreenState extends State<BookScreen> {
                       for (var car in displayedCars)
                         Column(
                           children: [
-                            BookedCard(
-                              id: car.id,
-                              name: car.name,
-                              brand: car.brand,
-                              image: car.image,
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => BookDetailScreen(car: car),
-                                  ),
-                                );
-                              },
+                            Semantics(
+                              label: 'semantics/book_screen/book-card'.i18n(),
+                              child: BookedCard(
+                                id: car.id,
+                                name: car.name,
+                                brand: car.brand,
+                                image: car.image,
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => BookDetailScreen(car: car),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                             const SizedBox(height: 10),
                           ],

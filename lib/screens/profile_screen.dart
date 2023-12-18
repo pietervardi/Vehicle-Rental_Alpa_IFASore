@@ -194,34 +194,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if(snapshot.hasData) {
                           final user = snapshot.data;
 
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushReplacement(context, NoAnimationPageRoute(
-                                builder: (context) => ProfilePictureScreen(imageUrl: user.imageUrl),
-                              ));
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: gray,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: gray
+                          return Semantics(
+                            onTapHint: 'semantics/profile_screen/profile-picture'.i18n(),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacement(context, NoAnimationPageRoute(
+                                  builder: (context) => ProfilePictureScreen(imageUrl: user.imageUrl),
+                                ));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: gray,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: gray
+                                  ),
                                 ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: user!.imageUrl.isEmpty
-                                  ? Image.asset(
-                                      'assets/profile/profile.png',
-                                      width: 100,
-                                      height: 100,
-                                    )
-                                  : Image.network(
-                                      user.imageUrl,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: user!.imageUrl.isEmpty
+                                    ? Image.asset(
+                                        'assets/profile/profile.png',
+                                        width: 100,
+                                        height: 100,
+                                      )
+                                    : Image.network(
+                                        user.imageUrl,
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                ),
                               ),
                             ),
                           );
@@ -234,40 +237,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            snapshot.data!.name.toString(),
-                            style: const TextStyle(
-                              fontSize: 22, 
-                              fontWeight: FontWeight.bold
+                          Semantics(
+                            label: 'semantics/profile_screen/account-name'.i18n(),
+                            child: Text(
+                              snapshot.data!.name.toString(),
+                              style: const TextStyle(
+                                fontSize: 22, 
+                                fontWeight: FontWeight.bold
+                              ),
                             ),
                           ),
-                          Text(
-                            '@${snapshot.data!.username.toString()}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: gray,
-                              fontWeight: FontWeight.w500
+                          Semantics(
+                            label: 'semantics/profile_screen/account-username'.i18n(),
+                            child: Text(
+                              '@${snapshot.data!.username.toString()}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: gray,
+                                fontWeight: FontWeight.w500
+                              ),
                             ),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => EditProfileScreen(user: snapshot.data,)
-                                )
-                              );
-                            }, 
-                            child: Text(
-                              'global/edit-profile'.i18n(),
-                              style: const TextStyle(
-                                color: primaryButton,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )
+                          Semantics(
+                            onTapHint: 'semantics/profile_screen/edit-profile'.i18n(),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EditProfileScreen(user: snapshot.data,)
+                                  )
+                                );
+                              }, 
+                              child: Text(
+                                'global/edit-profile'.i18n(),
+                                style: const TextStyle(
+                                  color: primaryButton,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            ),
                           )
                         ],
                       ),
@@ -277,49 +289,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'profile_screen/about'.i18n(),
-                  style: const TextStyle(
-                    fontSize: 20, 
-                    fontWeight: FontWeight.w600
+                Semantics(
+                  label: 'semantics/profile_screen/about'.i18n(),
+                  child: Text(
+                    'profile_screen/about'.i18n(),
+                    style: const TextStyle(
+                      fontSize: 20, 
+                      fontWeight: FontWeight.w600
+                    ),
                   ),
                 ),
-                SizedBox(
-                  height: 100,
-                  child: Text(
-                    snapshot.data!.about.toString(),
-                    textAlign: TextAlign.justify,
+                Semantics(
+                  label: 'semantics/profile_screen/account-about'.i18n(),
+                  child: SizedBox(
+                    height: 100,
+                    child: Text(
+                      snapshot.data!.about.toString(),
+                      textAlign: TextAlign.justify,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
-                ProfileButton(
-                  icon: Icons.lock_outlined,
-                  title: 'profile_screen/change-password'.i18n(),
-                  onPressed: () {
-                    resetFormFields();
-                    showChangePasswordDialog(context);
-                  },
+                Semantics(
+                  onTapHint: 'semantics/profile_screen/change-password'.i18n(),
+                  child: ProfileButton(
+                    icon: Icons.lock_outlined,
+                    title: 'profile_screen/change-password'.i18n(),
+                    onPressed: () {
+                      resetFormFields();
+                      showChangePasswordDialog(context);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 15),
-                ProfileButton(
-                  icon: Icons.logout_outlined,
-                  title: 'profile_screen/logout'.i18n(),
-                  onPressed: () {
-                    showConfirmationDialog(context, 'profile_screen/logout'.i18n(), () async{
-                      await clearSharedPreferences();
-                      if(mounted) {
-                        Navigator.push(context,MaterialPageRoute(builder: (_) => const LoginScreen()));
-                      }
-                    });
-                  },
+                Semantics(
+                  onTapHint: 'semantics/profile_screen/logout'.i18n(),
+                  child: ProfileButton(
+                    icon: Icons.logout_outlined,
+                    title: 'profile_screen/logout'.i18n(),
+                    onPressed: () {
+                      showConfirmationDialog(context, 'profile_screen/logout'.i18n(), () async{
+                        await clearSharedPreferences();
+                        if(mounted) {
+                          Navigator.push(context,MaterialPageRoute(builder: (_) => const LoginScreen()));
+                        }
+                      });
+                    },
+                  ),
                 ),
                 const SizedBox(height: 15),
-                ProfileButton(
-                  icon: Icons.delete_outlined,
-                  title: 'profile_screen/delete-account'.i18n(),
-                  onPressed: () async {
-                    showConfirmationDialog(context, 'profile_screen/delete-account'.i18n(), deleteAccountWrapper);
-                  },
+                Semantics(
+                  onTapHint: 'semantics/profile_screen/delete-account'.i18n(),
+                  child: ProfileButton(
+                    icon: Icons.delete_outlined,
+                    title: 'profile_screen/delete-account'.i18n(),
+                    onPressed: () async {
+                      showConfirmationDialog(context, 'profile_screen/delete-account'.i18n(), deleteAccountWrapper);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -340,39 +367,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return true;
           },
           child: AlertDialog(
-            title: Text('profile_screen/change-password'.i18n()),
+            title: Semantics(
+              label: 'semantics/profile_screen/change-password-title'.i18n(),
+              child: Text('profile_screen/change-password'.i18n())
+            ),
             content: Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  PasswordFormField(
-                    controller: currentPasswordController,
-                    labelText: 'profile_screen/current-password'.i18n(),
+                  Semantics(
+                    label: 'semantics/profile_screen/change-password-current-password'.i18n(),
+                    child: PasswordFormField(
+                      controller: currentPasswordController,
+                      labelText: 'profile_screen/current-password'.i18n(),
+                    ),
                   ),
-                  PasswordFormField(
-                    controller: newPasswordController,
-                    labelText: 'profile_screen/new-password'.i18n(),
+                  Semantics(
+                    label: 'semantics/profile_screen/change-password-new-password'.i18n(),
+                    child: PasswordFormField(
+                      controller: newPasswordController,
+                      labelText: 'profile_screen/new-password'.i18n(),
+                    ),
                   ),
-                  PasswordFormField(
-                    controller: confirmPasswordController,
-                    labelText: 'profile_screen/confirm-new-password'.i18n(),
+                  Semantics(
+                    label: 'semantics/profile_screen/change-password-confirm-new-password'.i18n(),
+                    child: PasswordFormField(
+                      controller: confirmPasswordController,
+                      labelText: 'profile_screen/confirm-new-password'.i18n(),
+                    ),
                   ),
                 ],
               ),
             ),
             actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('global/cancel'.i18n()),
+              Semantics(
+                onTapHint: 'semantics/global/cancel-button'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('global/cancel'.i18n()),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  changePassword();
-                },
-                child: Text('profile_screen/change-password'.i18n()),
+              Semantics(
+                onTapHint: 'semantics/profile_screen/change-password-button'.i18n(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    changePassword();
+                  },
+                  child: Text('profile_screen/change-password'.i18n()),
+                ),
               ),
             ],
           ),
