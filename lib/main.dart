@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vehicle_rental/controllers/background_service.dart';
 import 'package:vehicle_rental/utils/theme_provider.dart';
 import 'package:vehicle_rental/screens/splash_screen.dart';
 
@@ -14,6 +15,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await initializeService();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
