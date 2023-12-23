@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localization/localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/utils/global_variable.dart';
 import 'package:vehicle_rental/utils/appbar.dart';
+import 'package:vehicle_rental/utils/load_app_open_ad.dart';
 
 class ScreenLayout extends StatefulWidget {
   final int page;
@@ -16,11 +19,17 @@ class _ScreenLayoutState extends State<ScreenLayout> {
   int _page = 0;
   late PageController pageController;
 
+  late BannerAd _bannerAd;
+  bool _isBannerReady = false;
+
+  bool isPremium = false;
+
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: widget.page);
     onPageChanged(widget.page);
+    checkPremiumStatus();
   }
 
   @override
@@ -29,14 +38,43 @@ class _ScreenLayoutState extends State<ScreenLayout> {
     pageController.dispose();
   }
 
+  // Page Changed
   void onPageChanged(int page) {
     setState(() {
       _page = page;
     });
   }
 
+  // Navigation Tapped
   void navigationTapped(int page) {
     pageController.jumpToPage(page);
+  }
+
+  // Load Banner Ads
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      listener: BannerAdListener(onAdLoaded: (_) {
+        setState(() {
+          _isBannerReady = true;
+        });
+      }, onAdFailedToLoad: (ad, err) {
+        _isBannerReady = false;
+        ad.dispose();
+      }),
+      request: const AdRequest());
+    _bannerAd.load();
+  }
+
+  // Check Premium Status
+  Future<void> checkPremiumStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool premiumStatus = prefs.getBool('subscriptionStatus') ?? false;
+    if (premiumStatus == false) {
+      loadAppOpenAd();
+      _loadBannerAd();
+    }
   }
 
   @override
@@ -46,12 +84,33 @@ class _ScreenLayoutState extends State<ScreenLayout> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: buildAppBar(context, _page),
-        body: PageView(
-          controller: pageController,
-          onPageChanged: onPageChanged,
-          physics: const NeverScrollableScrollPhysics(),
-          children: homeScreenItems,
-        ),
+        body: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: pageController,
+                  onPageChanged: onPageChanged,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: homeScreenItems,
+                ),
+              ),
+            ],
+          ),
+          if (_isBannerReady && _page != 2)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                width: _bannerAd.size.width.toDouble(),
+                height: _bannerAd.size.height.toDouble(),
+                child: AdWidget(ad: _bannerAd),
+              ),
+            ),
+        ],
+      ),
         bottomNavigationBar: CupertinoTabBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(

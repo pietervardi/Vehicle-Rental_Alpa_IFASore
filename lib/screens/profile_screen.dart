@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -37,10 +38,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  late InterstitialAd _interstitialAd;
+  bool _isInterstitialReady = false;
+
+  bool isPremium = false;
+
   @override
   void initState() {
     super.initState();
     ToastContext().init(context);
+    checkPremiumStatus();
   }
 
   // get Current Email stored in SharedPreferences
@@ -109,6 +116,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await deleteUserFirestore();
           // Firebase Delete Account
           await _auth.deleteUserFirebase();
+          if (_isInterstitialReady) {
+            _interstitialAd.show();
+          }
           if (mounted) {
             Navigator.push(
               context, MaterialPageRoute
@@ -159,6 +169,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       .collection('users')
       .doc(currentUser.uid)
       .delete();
+  }
+
+  // Load Interstitial Ads
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+    adUnitId: "ca-app-pub-3940256099942544/1033173712",
+    request: const AdRequest(),
+    adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+      ad.fullScreenContentCallback = FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+        debugPrint("Close Interstitial Ad");
+      });
+      setState(() {
+        _isInterstitialReady = true;
+        _interstitialAd = ad;
+      });
+      }, onAdFailedToLoad: (err) {
+        _isInterstitialReady = false;
+        _interstitialAd.dispose();
+      })
+    );
+  }
+
+  // Check Premium Status
+  Future<void> checkPremiumStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool premiumStatus = prefs.getBool('subscriptionStatus') ?? false;
+    if (premiumStatus == false) {
+      _loadInterstitialAd();
+    }
   }
 
   @override
@@ -328,9 +367,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.logout_outlined,
                     title: 'profile_screen/logout'.i18n(),
                     onPressed: () {
-                      showConfirmationDialog(context, 'profile_screen/logout'.i18n(), () async{
+                      showConfirmationDialog(context, 'profile_screen/logout'.i18n(), () async {
                         await clearSharedPreferences();
-                        if(mounted) {
+                        if (_isInterstitialReady) {
+                          _interstitialAd.show();
+                        }
+                        if (mounted) {
                           Navigator.push(context,MaterialPageRoute(builder: (_) => const LoginScreen()));
                         }
                       });
