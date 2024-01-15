@@ -197,20 +197,15 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                           color: orange,
                           borderRadius: BorderRadius.circular(10)
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min, 
-                          children: [
-                            Text(
-                              currentIndex == screens.length - 1 
-                                ? 'GET STARTED' 
-                                : 'NEXT',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: whiteText,
-                              ),
-                            ),
-                          ]
+                        child: Text(
+                          currentIndex == screens.length - 1 
+                            ? 'GET STARTED'
+                            : 'NEXT',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: whiteText,
+                          ),
                         ),
                       ),
                     ),
