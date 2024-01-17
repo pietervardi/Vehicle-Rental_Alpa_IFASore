@@ -71,137 +71,139 @@ class _PremiumScreenState extends State<PremiumScreen> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        child: Column(
-          children: [
-            const Text(
-              'RentALPHA features only for Premium user',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            const ListTile(
-              leading: Icon(Icons.location_on),
-              title: Text(
-                'ALL LOCATIONS',
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
-                ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Column(
+            children: [
+              const Text(
+                'RentALPHA features only for Premium user',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(
-                "Connect through any of our locations all over the world for unparalleled anonymity.",
-                style: TextStyle(
-                  fontSize: 16
-                ),
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            const ListTile(
-              leading: Icon(Icons.speed),
-              title: Text(
-                'TOP SPEED',
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
-                ),
-              ),
-              subtitle: Text(
-                "Don't let safety in the way of enjoying app content at the highest level of quality.",
-                style: TextStyle(
-                  fontSize: 16
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            const ListTile(
-              leading: Icon(Icons.ads_click),
-              title: Text(
-                'NO ADS',
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
-                ),
-              ),
-              subtitle: Text(
-                "Get rid of all those banners and videos when you open the app.",
-                style: TextStyle(
-                  fontSize: 16
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            isPremium == false
-              ?
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    onPressed: () async {
-                      showConfirmationDialog(context, 'Purchase Premium', () async {
-                        await saveSubscriptionStatus(true);
-                        if (mounted) {
-                          Navigator.pushReplacement(
-                            context,
-                            NoAnimationPageRoute(
-                              builder: (context) => const ScreenLayout(),
-                            ),
-                          );
-                        }
-                      });
-                    },
-                    child: const Text(
-                      'Rp.240.000,00 / month',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                    )
+              const ListTile(
+                leading: Icon(Icons.location_on),
+                title: Text(
+                  'ALL LOCATIONS',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
                   ),
-                )
-              :
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    onPressed: () async {
-                      showConfirmationDialog(context, 'Cancel Subscription', () async {
-                        await saveSubscriptionStatus(false);
-                        if (mounted) {
-                          Navigator.pushReplacement(
-                            context,
-                            NoAnimationPageRoute(
-                              builder: (context) => const ScreenLayout(),
-                            ),
-                          );
-                        }
-                      });
-                    },
-                    child: const Text(
-                      'Cancel Subscription',
-                      style: TextStyle(
-                        fontSize: 20, 
-                        fontWeight: FontWeight.w900
+                ),
+                subtitle: Text(
+                  "Connect through any of our locations all over the world for unparalleled anonymity.",
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              const ListTile(
+                leading: Icon(Icons.speed),
+                title: Text(
+                  'TOP SPEED',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
+                  ),
+                ),
+                subtitle: Text(
+                  "Don't let safety in the way of enjoying app content at the highest level of quality.",
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              const ListTile(
+                leading: Icon(Icons.ads_click),
+                title: Text(
+                  'NO ADS',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
+                  ),
+                ),
+                subtitle: Text(
+                  "Get rid of all those banners and videos when you open the app.",
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              isPremium == false
+                ?
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
                       ),
-                    )
+                      onPressed: () async {
+                        showConfirmationDialog(context, 'Purchase Premium', () async {
+                          await saveSubscriptionStatus(true);
+                          if (mounted) {
+                            Navigator.pushReplacement(
+                              context,
+                              NoAnimationPageRoute(
+                                builder: (context) => const ScreenLayout(),
+                              ),
+                            );
+                          }
+                        });
+                      },
+                      child: const Text(
+                        'Rp.240.000,00 / month',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                      )
+                    ),
+                  )
+                :
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      onPressed: () async {
+                        showConfirmationDialog(context, 'Cancel Subscription', () async {
+                          await saveSubscriptionStatus(false);
+                          if (mounted) {
+                            Navigator.pushReplacement(
+                              context,
+                              NoAnimationPageRoute(
+                                builder: (context) => const ScreenLayout(),
+                              ),
+                            );
+                          }
+                        });
+                      },
+                      child: const Text(
+                        'Cancel Subscription',
+                        style: TextStyle(
+                          fontSize: 20, 
+                          fontWeight: FontWeight.w900
+                        ),
+                      )
+                    ),
                   ),
-                ),
-            const SizedBox(height: 15,),
-          ],
+              const SizedBox(height: 15,),
+            ],
+          ),
         ),
       ),
     );
