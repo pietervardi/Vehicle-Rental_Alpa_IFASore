@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:label="vehicle_rental"
+        android:label="Rentalpha"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

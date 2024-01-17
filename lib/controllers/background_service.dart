@@ -55,8 +55,8 @@ void onStart(ServiceInstance service) async {
 
   DateTime now = DateTime.now();
 
-  DateTime nextPromotionalTime = now.add(const Duration(minutes: 1));
-  DateTime nextDiscountTime = now.add(const Duration(minutes: 2));
+  DateTime nextPromotionalTime = now.add(const Duration(minutes: 5));
+  DateTime nextDiscountTime = now.add(const Duration(minutes: 10));
 
   Timer.periodic(Duration(
     seconds: nextPromotionalTime.isBefore(nextDiscountTime) 
