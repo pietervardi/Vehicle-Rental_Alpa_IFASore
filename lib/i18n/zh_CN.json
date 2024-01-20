@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "关于",
   "edit_profile_screen/update-profile": "更新个人资料",
 
+  "premium_screen/title": "RentALPHA仅限高级用户功能",
+  "premium_screen/location": "所有地点",
+  "premium_screen/location-subtitle": "通过我们遍布全球的任何地点连接，享受无与伦比的匿名性。",
+  "premium_screen/speed": "最高速度",
+  "premium_screen/speed-subtitle": "不要让安全性妨碍您以最高质量享受应用内容。",
+  "premium_screen/ads": "无广告",
+  "premium_screen/ads-subtitle": "打开应用时摆脱所有那些横幅和视频。",
+  "premium_screen/purchase": "购买高级",
+  "premium_screen/purchase-button": "Rp.240.000,00 / 月",
+  "premium_screen/cancel": "取消订阅",
+
   "bottom_sheet/title": "对此评论不感兴趣",
   "bottom_sheet/report-review": "举报评论",
   "bottom_sheet/delete-review": "删除评论",

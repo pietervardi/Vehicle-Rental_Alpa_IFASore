@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "소개",
   "edit_profile_screen/update-profile": "프로필 업데이트",
 
+  "premium_screen/title": "프리미엄 사용자를 위한 RentALPHA 기능",
+  "premium_screen/location": "모든 위치",
+  "premium_screen/location-subtitle": "전 세계 어디에서나 연결하여 전례없는 익명성을 누리세요.",
+  "premium_screen/speed": "최고 속도",
+  "premium_screen/speed-subtitle": "앱 콘텐츠를 최고 품질로 즐기는 데 안전이 방해되지 않도록 하세요.",
+  "premium_screen/ads": "광고 없음",
+  "premium_screen/ads-subtitle": "앱을 열 때 모든 배너와 비디오를 제거하세요.",
+  "premium_screen/purchase": "프리미엄 구매",
+  "premium_screen/purchase-button": "Rp.240.000,00 / 월",
+  "premium_screen/cancel": "구독 취소",
+
   "bottom_sheet/title": "이 리뷰에 관심이 없음",
   "bottom_sheet/report-review": "리뷰 신고",
   "bottom_sheet/delete-review": "리뷰 삭제",

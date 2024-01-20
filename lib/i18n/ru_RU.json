@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "О нас",
   "edit_profile_screen/update-profile": "Обновить профиль",
 
+  "premium_screen/title": "Функции RentALPHA только для пользователей Premium",
+  "premium_screen/location": "ВСЕ ЛОКАЦИИ",
+  "premium_screen/location-subtitle": "Подключайтесь через любую из наших локаций по всему миру для непревзойденной анонимности.",
+  "premium_screen/speed": "МАКСИМАЛЬНАЯ СКОРОСТЬ",
+  "premium_screen/speed-subtitle": "Не допускайте, чтобы безопасность мешала наслаждаться контентом приложения на высшем уровне качества.",
+  "premium_screen/ads": "БЕЗ РЕКЛАМЫ",
+  "premium_screen/ads-subtitle": "Избавьтесь от всех этих баннеров и видео, когда открываете приложение.",
+  "premium_screen/purchase": "Приобрести Премиум",
+  "premium_screen/purchase-button": "Rp.240.000,00 / месяц",
+  "premium_screen/cancel": "Отменить подписку",
+
   "bottom_sheet/title": "Не интересует этот обзор",
   "bottom_sheet/report-review": "Сообщить о обзоре",
   "bottom_sheet/delete-review": "Удалить обзор",

@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "Tentang",
   "edit_profile_screen/update-profile": "Perbarui Profil",
 
+  "premium_screen/title": "Fitur RentALPHA hanya untuk pengguna Premium",
+  "premium_screen/location": "SEMUA LOKASI",
+  "premium_screen/location-subtitle": "Terhubung melalui salah satu lokasi kami di seluruh dunia untuk anonimitas yang tak tertandingi.",
+  "premium_screen/speed": "KECEPATAN TINGGI",
+  "premium_screen/speed-subtitle": "Jangan biarkan keamanan menghalangi nikmati konten aplikasi dengan kualitas tertinggi.",
+  "premium_screen/ads": "TANPA IKLAN",
+  "premium_screen/ads-subtitle": "Lepaskan semua banner dan video saat membuka aplikasi.",
+  "premium_screen/purchase": "Beli Premium",
+  "premium_screen/purchase-button": "Rp.240.000,00 / bulan",
+  "premium_screen/cancel": "Batalkan Langganan",
+
   "bottom_sheet/title": "Tidak tertarik dengan ulasan ini",
   "bottom_sheet/report-review": "Laporkan Ulasan",
   "bottom_sheet/delete-review": "Hapus Ulasan",

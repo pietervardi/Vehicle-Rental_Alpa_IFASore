@@ -5,7 +5,6 @@ import 'package:localization/localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicle_rental/utils/global_variable.dart';
 import 'package:vehicle_rental/utils/appbar.dart';
-import 'package:vehicle_rental/utils/load_app_open_ad.dart';
 
 class ScreenLayout extends StatefulWidget {
   final int page;
@@ -72,7 +71,6 @@ class _ScreenLayoutState extends State<ScreenLayout> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool premiumStatus = prefs.getBool('subscriptionStatus') ?? false;
     if (premiumStatus == false) {
-      loadAppOpenAd();
       _loadBannerAd();
     }
   }

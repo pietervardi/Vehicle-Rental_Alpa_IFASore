@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "紹介",
   "edit_profile_screen/update-profile": "プロフィールを更新",
 
+  "premium_screen/title": "プレミアムユーザー専用のRentALPHA機能",
+  "premium_screen/location": "全てのロケーション",
+  "premium_screen/location-subtitle": "世界中のどのロケーションからでも接続し、比類ない匿名性を実現。",
+  "premium_screen/speed": "最高速度",
+  "premium_screen/speed-subtitle": "安全性を犠牲にすることなく、アプリコンテンツを最高品質でお楽しみください。",
+  "premium_screen/ads": "広告なし",
+  "premium_screen/ads-subtitle": "アプリを開くときに表示されるすべてのバナーや動画を取り除きます。",
+  "premium_screen/purchase": "プレミアム購入",
+  "premium_screen/purchase-button": "Rp.240.000,00 / 月",
+  "premium_screen/cancel": "購読キャンセル",
+
   "bottom_sheet/title": "このレビューに興味がありません",
   "bottom_sheet/report-review": "レビューの報告",
   "bottom_sheet/delete-review": "レビューの削除",

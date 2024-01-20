@@ -109,6 +109,17 @@
   "edit_profile_screen/about": "À propos",
   "edit_profile_screen/update-profile": "Mettre à jour le profil",
 
+  "premium_screen/title": "Fonctionnalités RentALPHA réservées aux utilisateurs Premium",
+  "premium_screen/location": "TOUTES LES LOCALISATIONS",
+  "premium_screen/location-subtitle": "Connectez-vous depuis n'importe laquelle de nos localisations à travers le monde pour une anonymat inégalé.",
+  "premium_screen/speed": "VITESSE MAXIMALE",
+  "premium_screen/speed-subtitle": "Ne laissez pas la sécurité entraver votre plaisir à profiter du contenu de l'application à la plus haute qualité.",
+  "premium_screen/ads": "SANS PUBLICITÉ",
+  "premium_screen/ads-subtitle": "Éliminez tous ces bannières et vidéos lorsque vous ouvrez l'application.",
+  "premium_screen/purchase": "Acheter Premium",
+  "premium_screen/purchase-button": "Rp.240.000,00 / mois",
+  "premium_screen/cancel": "Annuler l'Abonnement",
+
   "bottom_sheet/title": "Pas intéressé par cet avis",
   "bottom_sheet/report-review": "Signaler l'avis",
   "bottom_sheet/delete-review": "Supprimer l'avis",

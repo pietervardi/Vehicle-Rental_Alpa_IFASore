@@ -76,17 +76,17 @@ class _PremiumScreenState extends State<PremiumScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: Column(
             children: [
-              const Text(
-                'RentALPHA features only for Premium user',
+              Text(
+                'premium_screen/title'.i18n(),
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 50,
               ),
-              const ListTile(
+              ListTile(
                 leading: Icon(Icons.location_on),
                 title: Text(
-                  'ALL LOCATIONS',
+                  'premium_screen/location'.i18n(),
                   style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                 ),
                 subtitle: Text(
-                  "Connect through any of our locations all over the world for unparalleled anonymity.",
+                  "premium_screen/location-subtitle".i18n(),
                   style: TextStyle(
                     fontSize: 16
                   ),
@@ -103,10 +103,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
               const SizedBox(
                 height: 25,
               ),
-              const ListTile(
+              ListTile(
                 leading: Icon(Icons.speed),
                 title: Text(
-                  'TOP SPEED',
+                  'premium_screen/speed'.i18n(),
                   style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
@@ -114,7 +114,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                 ),
                 subtitle: Text(
-                  "Don't let safety in the way of enjoying app content at the highest level of quality.",
+                  "premium_screen/speed-subtitle".i18n(),
                   style: TextStyle(
                     fontSize: 16
                   ),
@@ -123,10 +123,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
               const SizedBox(
                 height: 25,
               ),
-              const ListTile(
+              ListTile(
                 leading: Icon(Icons.ads_click),
                 title: Text(
-                  'NO ADS',
+                  'premium_screen/ads'.i18n(),
                   style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
@@ -134,7 +134,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                 ),
                 subtitle: Text(
-                  "Get rid of all those banners and videos when you open the app.",
+                  "premium_screen/ads-subtitle".i18n(),
                   style: TextStyle(
                     fontSize: 16
                   ),
@@ -153,7 +153,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         backgroundColor: Colors.green,
                       ),
                       onPressed: () async {
-                        showConfirmationDialog(context, 'Purchase Premium', () async {
+                        showConfirmationDialog(context, 'premium_screen/purchase'.i18n(), () async {
                           await saveSubscriptionStatus(true);
                           if (mounted) {
                             Navigator.pushReplacement(
@@ -165,8 +165,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           }
                         });
                       },
-                      child: const Text(
-                        'Rp.240.000,00 / month',
+                      child: Text(
+                        'premium_screen/purchase-button'.i18n(),
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                       )
                     ),
@@ -180,7 +180,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         backgroundColor: Colors.red,
                       ),
                       onPressed: () async {
-                        showConfirmationDialog(context, 'Cancel Subscription', () async {
+                        showConfirmationDialog(context, 'premium_screen/cancel'.i18n(), () async {
                           await saveSubscriptionStatus(false);
                           if (mounted) {
                             Navigator.pushReplacement(
@@ -192,8 +192,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           }
                         });
                       },
-                      child: const Text(
-                        'Cancel Subscription',
+                      child: Text(
+                        'premium_screen/cancel'.i18n(),
                         style: TextStyle(
                           fontSize: 20, 
                           fontWeight: FontWeight.w900

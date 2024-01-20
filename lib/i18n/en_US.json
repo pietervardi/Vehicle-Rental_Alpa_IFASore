@@ -108,6 +108,17 @@
 
   "edit_profile_screen/about": "About",
   "edit_profile_screen/update-profile": "Update Profile",
+  
+  "premium_screen/title": "RentALPHA features only for Premium user",
+  "premium_screen/location": "ALL LOCATIONS",
+  "premium_screen/location-subtitle": "Connect through any of our locations all over the world for unparalleled anonymity.",
+  "premium_screen/speed": "TOP SPEED",
+  "premium_screen/speed-subtitle": "Don't let safety in the way of enjoying app content at the highest level of quality.",
+  "premium_screen/ads": "NO ADS",
+  "premium_screen/ads-subtitle": "Get rid of all those banners and videos when you open the app.",
+  "premium_screen/purchase": "Purchase Premium",
+  "premium_screen/purchase-button": "Rp.240.000,00 / month",
+  "premium_screen/cancel": "Cancel Subscription",
 
   "bottom_sheet/title": "Not interested in this Review",
   "bottom_sheet/report-review": "Report Review",
